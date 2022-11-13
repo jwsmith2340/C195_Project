@@ -24,11 +24,20 @@ public class AppointmentMainController {
     public TableColumn customerIdColumn;
     public TableColumn userIdColumn;
 
-    public void appointmentAddButton(ActionEvent actionEvent) {
-
+    public void appointmentAddButton(ActionEvent actionEvent) throws IOException {
+        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AddAppointment.fxml"));
+        Scene addPartScene = new Scene(add_product);
+        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        addPartStage.setScene(addPartScene);
+        addPartStage.show();
     }
 
-    public void appointmentModifyButton(ActionEvent actionEvent) {
+    public void appointmentModifyButton(ActionEvent actionEvent) throws IOException {
+        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/ModifyAppointment.fxml"));
+        Scene addPartScene = new Scene(add_product);
+        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        addPartStage.setScene(addPartScene);
+        addPartStage.show();
     }
 
     public void appointmentBackButton(ActionEvent actionEvent) throws IOException {

@@ -19,11 +19,11 @@ public class MainMenuController {
     public Button mainExitButton;
 
     public void mainCustomerButton(ActionEvent actionEvent) throws IOException {
-//        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
-//        Scene addPartScene = new Scene(add_product);
-//        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-//        addPartStage.setScene(addPartScene);
-//        addPartStage.show();
+        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+        Scene addPartScene = new Scene(add_product);
+        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        addPartStage.setScene(addPartScene);
+        addPartStage.show();
     }
 
     public void mainAppointmentButton(ActionEvent actionEvent) throws IOException {
