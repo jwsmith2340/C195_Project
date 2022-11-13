@@ -16,5 +16,6 @@
       <Button fx:id="mainAppointmentButton" layoutX="163.0" layoutY="126.0" mnemonicParsing="false" onAction="#mainAppointmentButton" text="Appointment Page" />
       <Button fx:id="mainReportsButton" layoutX="192.0" layoutY="184.0" mnemonicParsing="false" onAction="#mainReportsButton" text="Reports" />
       <Button fx:id="mainLogsButton" layoutX="201.0" layoutY="236.0" mnemonicParsing="false" onAction="#mainLogsButton" text="Logs" />
+      <Button fx:id="mainExitButton" layoutX="204.0" layoutY="289.0" mnemonicParsing="false" onAction="#mainExitButton" text="Exit" />
    </children>
 </AnchorPane>

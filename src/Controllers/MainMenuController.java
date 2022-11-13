@@ -1,5 +1,6 @@
 package Controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 
@@ -8,6 +9,7 @@ public class MainMenuController {
     public Button mainAppointmentButton;
     public Button mainReportsButton;
     public Button mainLogsButton;
+    public Button mainExitButton;
 
     public void mainCustomerButton(ActionEvent actionEvent) {
     }
@@ -19,5 +21,9 @@ public class MainMenuController {
     }
 
     public void mainLogsButton(ActionEvent actionEvent) {
+    }
+
+    public void mainExitButton(ActionEvent actionEvent) {
+        Platform.exit();
     }
 }

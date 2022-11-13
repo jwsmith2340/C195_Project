@@ -3,11 +3,17 @@ package Controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -49,9 +55,14 @@ public class LoginController implements Initializable {
 
     }
 
-    public void loginPageLogin(ActionEvent actionEvent) {
-        System.out.println(localZoneId);
+    public void loginPageLogin(ActionEvent event) throws IOException {
         System.out.println("login");
+
+        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
+        Scene addPartScene = new Scene(add_product);
+        Stage addPartStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        addPartStage.setScene(addPartScene);
+        addPartStage.show();
     }
 
     public void loginPageExit(ActionEvent actionEvent) {
