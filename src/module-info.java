@@ -1,6 +1,7 @@
 module c195.c195 {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
 
     exports main;
