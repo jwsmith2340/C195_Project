@@ -62,12 +62,25 @@ public class CustomerMainController implements Initializable {
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
             ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
-            System.out.println(sqlResult);
+            while (sqlResult.next()) {
+
+                int customerId = sqlResult.getInt("Customer_ID");
+                String customerName = sqlResult.getString("Customer_Name");
+                String customerAddress = sqlResult.getString("Address");
+                int customerPostalCode = sqlResult.getInt("Postal_Code");
+                int customerPhone = sqlResult.getInt("Phone");
+                String customerCountry = sqlResult.getString("Country");
+                String customerDivision = sqlResult.getString("Division");
+                Customer customer = new Customer(customerId, customerName, customerAddress, customerPostalCode, customerPhone, customerCountry, customerDivision);
+                customerList.addAll(customer);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
+        customerMainTableView.setItems(customerList);
     }
 
     public void customersAddButton(ActionEvent actionEvent) throws IOException {

@@ -6,16 +6,26 @@ public class Customer {
     private String customerName;
     private String customerAddress;
     private int customerPostal;
+    private int customerPhone;
     private String customerCountry;
     private String customerDivision;
 
-    public Customer(int customerId, String customerName, String customerAddress, int customerPostal, String customerCountry, String customerDivision) {
+    public Customer(int customerId, String customerName, String customerAddress, int customerPostal, int customerPhone, String customerCountry, String customerDivision) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
         this.customerPostal = customerPostal;
+        this.customerPhone = customerPhone;
         this.customerCountry = customerCountry;
         this.customerDivision = customerDivision;
+    }
+
+    public int getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(int customerPhone) {
+        this.customerPhone = customerPhone;
     }
 
     public int getCustomerId() {
