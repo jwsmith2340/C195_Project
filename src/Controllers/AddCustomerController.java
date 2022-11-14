@@ -68,7 +68,7 @@ public class AddCustomerController implements Initializable {
     }
 
     private void setCountryComboBox() {
-        String sqlStatement = "SELECT Country FROM countries;";
+        String sqlStatement = "SELECT country FROM countries;";
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
             ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
@@ -88,7 +88,7 @@ public class AddCustomerController implements Initializable {
     }
 
     private void setDivisionComboBox() {
-        String sqlStatement = "SELECT Division FROM first_level_divisions;";
+        String sqlStatement = "SELECT division FROM first_level_divisions;";
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
             ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
