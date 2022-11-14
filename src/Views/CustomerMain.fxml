@@ -20,6 +20,7 @@
           <TableColumn fx:id="customerNameColumn" prefWidth="75.0" text="Name" />
             <TableColumn fx:id="customerAddressColumn" prefWidth="75.0" text="Address" />
             <TableColumn fx:id="customerPostalColumn" prefWidth="75.0" text="Postal Code" />
+            <TableColumn fx:id="customerPhoneColumn" prefWidth="75.0" text="Phone" />
             <TableColumn fx:id="customerCountryColumn" prefWidth="75.0" text="Country" />
             <TableColumn fx:id="customerDivisionColumn" prefWidth="75.0" text="Division" />
         </columns>

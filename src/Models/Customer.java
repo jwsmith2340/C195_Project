@@ -5,12 +5,12 @@ public class Customer {
     private int customerId;
     private String customerName;
     private String customerAddress;
-    private int customerPostal;
-    private int customerPhone;
+    private String customerPostal;
+    private String customerPhone;
     private String customerCountry;
     private String customerDivision;
 
-    public Customer(int customerId, String customerName, String customerAddress, int customerPostal, int customerPhone, String customerCountry, String customerDivision) {
+    public Customer(int customerId, String customerName, String customerAddress, String customerPostal, String customerPhone, String customerCountry, String customerDivision) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
@@ -20,11 +20,11 @@ public class Customer {
         this.customerDivision = customerDivision;
     }
 
-    public int getCustomerPhone() {
+    public String getCustomerPhone() {
         return customerPhone;
     }
 
-    public void setCustomerPhone(int customerPhone) {
+    public void setCustomerPhone(String customerPhone) {
         this.customerPhone = customerPhone;
     }
 
@@ -52,11 +52,11 @@ public class Customer {
         this.customerAddress = customerAddress;
     }
 
-    public int getCustomerPostal() {
+    public String getCustomerPostal() {
         return customerPostal;
     }
 
-    public void setCustomerPostal(int customerPostal) {
+    public void setCustomerPostal(String customerPostal) {
         this.customerPostal = customerPostal;
     }
 

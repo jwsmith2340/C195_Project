@@ -23,7 +23,7 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        DBConnection.startConnection();
+//        DBConnection.startConnection();
         launch();
         DBConnection.closeConnection();
     }

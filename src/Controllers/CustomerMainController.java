@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import Database.DBConnection;
@@ -47,6 +48,8 @@ public class CustomerMainController implements Initializable {
     @FXML
     public Button customersBackButton;
     @FXML
+    public TableColumn customerPhoneColumn;
+    @FXML
     ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
     @Override
@@ -67,12 +70,21 @@ public class CustomerMainController implements Initializable {
                 int customerId = sqlResult.getInt("Customer_ID");
                 String customerName = sqlResult.getString("Customer_Name");
                 String customerAddress = sqlResult.getString("Address");
-                int customerPostalCode = sqlResult.getInt("Postal_Code");
-                int customerPhone = sqlResult.getInt("Phone");
+                String customerPostalCode = sqlResult.getString("Postal_Code");
+                String customerPhone = sqlResult.getString("Phone");
                 String customerCountry = sqlResult.getString("Country");
                 String customerDivision = sqlResult.getString("Division");
                 Customer customer = new Customer(customerId, customerName, customerAddress, customerPostalCode, customerPhone, customerCountry, customerDivision);
                 customerList.addAll(customer);
+
+                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+                customerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
+                customerPostalColumn.setCellValueFactory(new PropertyValueFactory<>("customerPostal"));
+                customerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("customerPhone"));
+                customerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("customerCountry"));
+                customerDivisionColumn.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
