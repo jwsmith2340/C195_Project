@@ -94,7 +94,7 @@ public class AddCustomerController implements Initializable {
             ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
             while (sqlResult.next()) {
 
-                String division = sqlResult.getString("Country");
+                String division = sqlResult.getString("Division");
                 divisionList.add(division);
                 System.out.println(divisionList);
             }
