@@ -26,9 +26,9 @@ import java.util.ResourceBundle;
 
 public class AddCustomerController implements Initializable {
     @FXML
-    public ComboBox addCustomerCountryCombo;
+    public ComboBox<String> addCustomerCountryCombo;
     @FXML
-    public ComboBox addCustomerDivisionCombo;
+    public ComboBox<String> addCustomerDivisionCombo;
     @FXML
     public TextField addCustomerNameField;
     @FXML
@@ -73,10 +73,9 @@ public class AddCustomerController implements Initializable {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
             ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
             while (sqlResult.next()) {
-
                 String country = sqlResult.getString("Country");
                 countryList.add(country);
-
+                System.out.println(countryList);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -84,7 +83,8 @@ public class AddCustomerController implements Initializable {
             throw new RuntimeException(e);
         }
 
-        addCustomerCountryCombo.setItems(countryList);
+        addCustomerCountryCombo.getItems().clear();
+        addCustomerCountryCombo.getItems().addAll(countryList);
     }
 
     private void setDivisionComboBox() {
@@ -96,7 +96,7 @@ public class AddCustomerController implements Initializable {
 
                 String division = sqlResult.getString("Country");
                 divisionList.add(division);
-
+                System.out.println(divisionList);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -104,7 +104,8 @@ public class AddCustomerController implements Initializable {
             throw new RuntimeException(e);
         }
 
-        addCustomerDivisionCombo.setItems(divisionList);
+        addCustomerDivisionCombo.getItems().clear();
+        addCustomerDivisionCombo.getItems().addAll(divisionList);
     }
 
 }
