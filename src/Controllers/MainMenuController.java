@@ -19,7 +19,8 @@ public class MainMenuController {
     public Button mainExitButton;
 
     public void mainCustomerButton(ActionEvent actionEvent) throws IOException {
-        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+//        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AddCustomer.fxml"));
         Scene addPartScene = new Scene(add_product);
         Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         addPartStage.setScene(addPartScene);
