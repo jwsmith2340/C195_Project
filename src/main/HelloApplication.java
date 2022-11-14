@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import Database.DBConnection;
 
 
 import java.io.IOException;
@@ -21,7 +22,9 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        DBConnection.startConnection();
         launch();
+        DBConnection.closeConnection();
     }
 }
