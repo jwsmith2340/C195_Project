@@ -9,5 +9,5 @@ module c195.c195 {
     exports Controllers;
     opens Controllers to javafx.fxml;
     exports Models;
-    opens Model to javafx.fxml;
+    opens Models to javafx.fxml;
 }
