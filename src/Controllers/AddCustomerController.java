@@ -41,10 +41,13 @@ public class AddCustomerController implements Initializable {
     public Button addCustomerCancel;
     @FXML
     ObservableList<String> countryList = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<String> divisionList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        setCountryComboBox();
+        setDivisionComboBox();
     }
 
     public void addCustomerSave(ActionEvent actionEvent) {
@@ -82,6 +85,26 @@ public class AddCustomerController implements Initializable {
         }
 
         addCustomerCountryCombo.setItems(countryList);
+    }
+
+    private void setDivisionComboBox() {
+        String sqlStatement = "SELECT Division FROM first_level_divisions;";
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            while (sqlResult.next()) {
+
+                String division = sqlResult.getString("Country");
+                divisionList.add(division);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        addCustomerDivisionCombo.setItems(divisionList);
     }
 
 }
