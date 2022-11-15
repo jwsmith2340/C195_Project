@@ -39,6 +39,8 @@ public class LoginController implements Initializable {
     public Label usernameLabel;
     public Label passwordLabel;
     public Label headingLabel;
+    @FXML
+    public Label loginErrorLabel;
     private ZoneId localZoneId = ZoneId.systemDefault();
     private ResourceBundle rb;
 
@@ -61,25 +63,25 @@ public class LoginController implements Initializable {
     }
 
     public void loginPageLogin(ActionEvent event) throws IOException, SQLException, ClassNotFoundException {
-        // Take in string values from password and username fields
-        // run query with those values in the DB
-        // if length > 0, proceed, else, alert message or something
         String userName = String.valueOf(usernameField.getText());
         String userPassword = String.valueOf(passwordField.getText());
 
-        String sqlStatement = "SELECT COUNT(*) FROM users WHERE User_Name = " + userName + " AND Password = " + userPassword + ";";
+        String sqlStatement = "SELECT COUNT(*) as total FROM users WHERE User_Name = \"" + userName + "\" AND Password = \"" + userPassword + "\";";
 
         PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
         ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
 
-        System.out.println(sqlResult.first());
+        sqlResult.next();
+        if (sqlResult.getInt("total") != 1) {
+            Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
+            Scene addPartScene = new Scene(add_product);
+            Stage addPartStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            addPartStage.setScene(addPartScene);
+            addPartStage.show();
+        } else {
+            loginErrorLabel.setText("Incorrect Username or Password");
+        }
 
-
-        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
-        Scene addPartScene = new Scene(add_product);
-        Stage addPartStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        addPartStage.setScene(addPartScene);
-        addPartStage.show();
     }
 
     public void loginPageExit(ActionEvent actionEvent) {
