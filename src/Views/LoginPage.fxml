@@ -21,6 +21,6 @@
       <Button fx:id="loginPageLogin" layoutX="64.0" layoutY="242.0" mnemonicParsing="false" onAction="#loginPageLogin" text="Login" />
       <Button fx:id="loginPageExit" layoutX="188.0" layoutY="242.0" mnemonicParsing="false" onAction="#loginPageExit" text="Exit" />
       <Label fx:id="zoneIdLabel" alignment="CENTER" layoutX="99.0" layoutY="292.0" prefHeight="18.0" prefWidth="112.0" />
-      <Label fx:id="loginErrorLabel" layoutX="141.0" layoutY="207.0" text="Label" />
+      <Label fx:id="loginErrorLabel" alignment="CENTER" layoutX="35.0" layoutY="207.0" prefHeight="18.0" prefWidth="235.0" textFill="RED" />
    </children>
 </AnchorPane>

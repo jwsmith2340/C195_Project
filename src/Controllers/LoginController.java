@@ -72,7 +72,7 @@ public class LoginController implements Initializable {
         ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
 
         sqlResult.next();
-        if (sqlResult.getInt("total") != 1) {
+        if (sqlResult.getInt("total") == 1) {
             Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
             Scene addPartScene = new Scene(add_product);
             Stage addPartStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
