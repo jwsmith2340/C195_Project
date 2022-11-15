@@ -9,7 +9,6 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="304.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginController">
    <children>
-      <PasswordField fx:id="passwordField" layoutX="114.0" layoutY="169.0" />
       <Label fx:id="headingLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="31.0" prefHeight="20.0" prefWidth="203.0" text="Scheduling Application">
          <font>
             <Font name="System Bold" size="18.0" />
@@ -18,6 +17,7 @@
       <Label fx:id="usernameLabel" layoutX="36.0" layoutY="114.0" text="Username" />
       <Label fx:id="passwordLabel" layoutX="36.0" layoutY="173.0" text="Password" />
       <TextField fx:id="usernameField" layoutX="113.0" layoutY="110.0" />
+      <PasswordField fx:id="passwordField" layoutX="114.0" layoutY="169.0" />
       <Button fx:id="loginPageLogin" layoutX="64.0" layoutY="242.0" mnemonicParsing="false" onAction="#loginPageLogin" text="Login" />
       <Button fx:id="loginPageExit" layoutX="188.0" layoutY="242.0" mnemonicParsing="false" onAction="#loginPageExit" text="Exit" />
       <Label fx:id="zoneIdLabel" alignment="CENTER" layoutX="99.0" layoutY="292.0" prefHeight="18.0" prefWidth="112.0" />
