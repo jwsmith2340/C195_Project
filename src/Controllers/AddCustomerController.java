@@ -64,8 +64,8 @@ public class AddCustomerController implements Initializable {
 //        String customerCountry = String.valueOf(addCustomerCountryCombo.getValue());
         String customerDivision = String.valueOf(addCustomerDivisionCombo.getValue());
 
-        String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By" +
-                "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
+                "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?)";
 
         DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
         PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
@@ -84,6 +84,11 @@ public class AddCustomerController implements Initializable {
             preparedStatement.execute();
             if (preparedStatement.getUpdateCount() > 0) {
                 System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+                Scene addPartScene = new Scene(add_product);
+                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                addPartStage.setScene(addPartScene);
+                addPartStage.show();
             } else {
                 System.out.println("An error occurred and no customers were created.");
             }
