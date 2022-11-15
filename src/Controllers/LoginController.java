@@ -63,6 +63,7 @@ public class LoginController implements Initializable {
     }
 
     public void loginPageLogin(ActionEvent event) throws IOException, SQLException, ClassNotFoundException {
+        // I don't think I need any input validation here
         String userName = String.valueOf(usernameField.getText());
         String userPassword = String.valueOf(passwordField.getText());
 
@@ -70,7 +71,6 @@ public class LoginController implements Initializable {
 
         PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
         ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
-
         sqlResult.next();
         if (sqlResult.getInt("total") == 1) {
             Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));

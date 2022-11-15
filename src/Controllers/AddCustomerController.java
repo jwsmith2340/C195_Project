@@ -1,6 +1,7 @@
 package Controllers;
 
 import Database.DBConnection;
+import Database.DBPreparedStatement;
 import Models.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,13 +51,46 @@ public class AddCustomerController implements Initializable {
         setDivisionComboBox();
     }
 
-    public void addCustomerSave(ActionEvent actionEvent) {
+    public void addCustomerSave(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
+        java.util.Date datetime = new java.util.Date();
+        java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String currentTime = dateTimeFormatted.format(datetime);
+
         String customerName =String.valueOf(addCustomerNameField.getText());
         String customerAddress = String.valueOf(addCustomerAddressField.getText());
         String customerPostal = String.valueOf(addCustomerZipField.getText());
         String customerPhone = String.valueOf(addCustomerPhoneField.getText());
-        String customerCountry = String.valueOf(addCustomerCountryCombo.getValue());
+//        String customerCountry = String.valueOf(addCustomerCountryCombo.getValue());
         String customerDivision = String.valueOf(addCustomerDivisionCombo.getValue());
+
+        String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By" +
+                "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+        preparedStatement.setString(1, customerName);
+        preparedStatement.setString(2, customerAddress);
+        preparedStatement.setString(3, customerPostal);
+        preparedStatement.setString(4, customerPhone);
+        preparedStatement.setString(5, currentTime);
+        preparedStatement.setString(6, "user");
+        preparedStatement.setString(7, currentTime);
+        preparedStatement.setString(8, "user");
+        preparedStatement.setInt(9, 66);
+
+        try {
+            preparedStatement.execute();
+            if (preparedStatement.getUpdateCount() > 0) {
+                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+            } else {
+                System.out.println("An error occurred and no customers were created.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     public void addCustomerCancel(ActionEvent actionEvent) throws IOException {
@@ -106,6 +140,10 @@ public class AddCustomerController implements Initializable {
 
         addCustomerDivisionCombo.getItems().clear();
         addCustomerDivisionCombo.getItems().addAll(divisionList);
+    }
+
+    private int getDivisionId() {
+        return 1;
     }
 
 }
