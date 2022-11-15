@@ -1,5 +1,6 @@
 package Controllers;
 
+import Database.DBConnection;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +16,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
@@ -55,8 +60,20 @@ public class LoginController implements Initializable {
 
     }
 
-    public void loginPageLogin(ActionEvent event) throws IOException {
-        System.out.println("login");
+    public void loginPageLogin(ActionEvent event) throws IOException, SQLException, ClassNotFoundException {
+        // Take in string values from password and username fields
+        // run query with those values in the DB
+        // if length > 0, proceed, else, alert message or something
+        String userName = String.valueOf(usernameField.getText());
+        String userPassword = String.valueOf(passwordField.getText());
+
+        String sqlStatement = "SELECT COUNT(*) FROM users WHERE User_Name = " + userName + " AND Password = " + userPassword + ";";
+
+        PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+        ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+
+        System.out.println(sqlResult.first());
+
 
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
         Scene addPartScene = new Scene(add_product);
