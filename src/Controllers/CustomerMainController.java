@@ -50,6 +50,8 @@ public class CustomerMainController implements Initializable {
     @FXML
     public TableColumn customerPhoneColumn;
     @FXML
+    public Button customersDeleteButton;
+    @FXML
     ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
     @Override
@@ -132,4 +134,24 @@ public class CustomerMainController implements Initializable {
         addPartStage.show();
     }
 
+    public void customersDeleteButton(ActionEvent actionEvent) {
+        // Don't forget the cascade delete for all events when this is deleted
+        if(customerMainTableView.getSelectionModel().getSelectedItem() != null) {
+            Customer selectedCustomer = (Customer) customerMainTableView.getSelectionModel().getSelectedItem();
+            System.out.println(selectedCustomer.getCustomerId());
+//            Parent parent;
+//            Stage stage;
+//            stage = (Stage) customersModifyButton.getScene().getWindow();
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ModifyCustomer.fxml"));
+//            parent = loader.load();
+//            Scene scene = new Scene(parent);
+//            stage.setScene(scene);
+//            ModifyCustomerController controller = loader.getController();
+//            controller.setCustomer(selectedCustomer);
+////            controller.getCustomerModify();
+        } else {
+//            errorAlert(2);
+            System.out.println("In customersDeleteButton Else statement ALERT NEEDED");
+        }
+    }
 }

@@ -67,7 +67,8 @@ public class ModifyCustomerController {
         preparedStatement.setString(6, "updating user LOGIC NEEDED");
         preparedStatement.setInt(7, 66);
         preparedStatement.setInt(8, customerId);
-        // This logic needs updated to parse the country/division info for validation and then return int div_id value
+        // This logic needs updated to parse the country/division info for validation and then return int div_id value,
+        // also don't forget to validate if the country and division.country id matches
 
         try {
             preparedStatement.execute();
