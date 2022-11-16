@@ -134,6 +134,7 @@ public class AppointmentMainController implements Initializable {
     }
 
     public void appointmentWeekRadio(MouseEvent actionEvent) {
+        appointmentList.clear();
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
                 "Customers.Customer_Name, Users.User_Name FROM Appointments INNER JOIN Customers ON " +
@@ -182,6 +183,52 @@ public class AppointmentMainController implements Initializable {
     }
 
     public void appointmentMonthRadio(ActionEvent actionEvent) {
+        appointmentList.clear();
+        String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
+                "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
+                "Customers.Customer_Name, Users.User_Name FROM Appointments INNER JOIN Customers ON " +
+                "Appointments.Customer_ID = Customers.Customer_ID INNER JOIN Users on Appointments.User_ID = Users.User_ID" +
+                "INNER JOIN Contacts on Appointments.Contact_ID = Contacts.Contact_ID" +
+                "WHERE Appointments.Start <= now() + interval 1 month AND appointments.Start >= now();";
+
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            while (sqlResult.next()) {
+
+                int appointmentId = sqlResult.getInt("Appointment_ID");
+                String appointmentTitle = sqlResult.getString("Title");
+                String appointmentDescription = sqlResult.getString("Description");
+                String appointmentLocation = sqlResult.getString("Location");
+                String contactsName = sqlResult.getString("Contact_Name");
+                String appointmentType = sqlResult.getString("Type");
+                String appointmentStart = sqlResult.getString("Start");
+                String appointmentEnd = sqlResult.getString("End");
+                String customerName = sqlResult.getString("Customer_Name");
+                String userName = sqlResult.getString("User_Name");
+
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerName, userName);
+                appointmentList.addAll(appointment);
+
+                appointmentColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+                titleColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
+                descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentDescription"));
+                locationColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentLocation"));
+                contactColumn.setCellValueFactory(new PropertyValueFactory<>("contactsName"));
+                typeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
+                startDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
+                endDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
+                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+                userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        appointmentsTableView.setItems(appointmentList);
     }
 
     public void initialize(ActionEvent actionEvent) {
