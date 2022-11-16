@@ -76,7 +76,7 @@ public class AppointmentMainController implements Initializable {
                 String appointmentStart = sqlResult.getString("Appointments.Start");
                 String appointmentEnd = sqlResult.getString("Appointments.End");
                 String customerName = sqlResult.getString("Customers.Customer_Name");
-                String userName = sqlResult.getString("User.User_Name");
+                String userName = sqlResult.getString("Users.User_Name");
 
                 Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerName, userName);
                 appointmentList.addAll(appointment);
