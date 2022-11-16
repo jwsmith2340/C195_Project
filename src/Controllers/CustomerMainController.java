@@ -1,5 +1,6 @@
 package Controllers;
 
+import Database.DBPreparedStatement;
 import Models.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -134,11 +135,39 @@ public class CustomerMainController implements Initializable {
         addPartStage.show();
     }
 
-    public void customersDeleteButton(ActionEvent actionEvent) {
+    public void customersDeleteButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
         // Don't forget the cascade delete for all events when this is deleted
         if(customerMainTableView.getSelectionModel().getSelectedItem() != null) {
             Customer selectedCustomer = (Customer) customerMainTableView.getSelectionModel().getSelectedItem();
-            System.out.println(selectedCustomer.getCustomerId());
+            Integer customerId = selectedCustomer.getCustomerId();
+
+
+
+            String sqlDeleteStatement = "DELETE FROM Customers WHERE Customer_ID = ?";
+
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlDeleteStatement);
+            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+            preparedStatement.setInt(1, customerId);
+            // This logic needs updated to parse the country/division info for validation and then return int div_id value,
+            // also don't forget to validate if the country and division.country id matches
+
+            try {
+                preparedStatement.execute();
+                if (preparedStatement.getUpdateCount() > 0) {
+                    System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                    Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+                    Scene addPartScene = new Scene(add_product);
+                    Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    addPartStage.setScene(addPartScene);
+                    addPartStage.show();
+                } else {
+                    System.out.println("An error occurred and the customer wasn't deleted.");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
 //            Parent parent;
 //            Stage stage;
 //            stage = (Stage) customersModifyButton.getScene().getWindow();
