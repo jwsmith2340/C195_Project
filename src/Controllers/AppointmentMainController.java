@@ -231,4 +231,7 @@ public class AppointmentMainController implements Initializable {
         appointmentsTableView.setItems(appointmentList);
     }
 
+    public void initialize(ActionEvent actionEvent) {}
+
+
 }
