@@ -114,7 +114,6 @@ public class AddCustomerController implements Initializable {
             while (sqlResult.next()) {
                 String country = sqlResult.getString("Country");
                 countryList.add(country);
-                System.out.println(countryList);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -135,7 +134,6 @@ public class AddCustomerController implements Initializable {
 
                 String division = sqlResult.getString("Division");
                 divisionList.add(division);
-                System.out.println(divisionList);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

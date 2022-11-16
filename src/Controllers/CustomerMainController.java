@@ -141,21 +141,36 @@ public class CustomerMainController implements Initializable {
             Customer selectedCustomer = (Customer) customerMainTableView.getSelectionModel().getSelectedItem();
             Integer customerId = selectedCustomer.getCustomerId();
 
-
-
-            String sqlDeleteStatement = "DELETE FROM Customers WHERE Customer_ID = ?";
-
-            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlDeleteStatement);
+            String sqlCascadeDeleteStatement = "DELETE FROM Appointments WHERE Customer_ID = ?";
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlCascadeDeleteStatement);
             PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
 
             preparedStatement.setInt(1, customerId);
-            // This logic needs updated to parse the country/division info for validation and then return int div_id value,
-            // also don't forget to validate if the country and division.country id matches
-
+            // Deletes the customer's appointments first
             try {
                 preparedStatement.execute();
                 if (preparedStatement.getUpdateCount() > 0) {
                     System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                } else {
+                    System.out.println("An error occurred and the customer's appointments weren't deleted.");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            String sqlDeleteStatement = "DELETE FROM Customers WHERE Customer_ID = ?";
+
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlDeleteStatement);
+            PreparedStatement secondPreparedStatement = DBPreparedStatement.getPreparedStatement();
+
+            secondPreparedStatement.setInt(1, customerId);
+            // This logic needs updated to parse the country/division info for validation and then return int div_id value,
+            // also don't forget to validate if the country and division.country id matches
+
+            try {
+                secondPreparedStatement.execute();
+                if (secondPreparedStatement.getUpdateCount() > 0) {
+                    System.out.println("Number of rows affected: " + secondPreparedStatement.getUpdateCount());
                     Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
                     Scene addPartScene = new Scene(add_product);
                     Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -168,16 +183,6 @@ public class CustomerMainController implements Initializable {
                 System.out.println(e.getMessage());
             }
 
-//            Parent parent;
-//            Stage stage;
-//            stage = (Stage) customersModifyButton.getScene().getWindow();
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ModifyCustomer.fxml"));
-//            parent = loader.load();
-//            Scene scene = new Scene(parent);
-//            stage.setScene(scene);
-//            ModifyCustomerController controller = loader.getController();
-//            controller.setCustomer(selectedCustomer);
-////            controller.getCustomerModify();
         } else {
 //            errorAlert(2);
             System.out.println("In customersDeleteButton Else statement ALERT NEEDED");
