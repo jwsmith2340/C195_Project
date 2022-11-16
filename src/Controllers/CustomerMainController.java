@@ -110,7 +110,7 @@ public class CustomerMainController implements Initializable {
             Parent parent;
             Stage stage;
             stage = (Stage) customersModifyButton.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Modify_Part.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ModifyCustomer.fxml"));
             parent = loader.load();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
@@ -122,17 +122,6 @@ public class CustomerMainController implements Initializable {
             System.out.println("In customersModifyButton Else statement ALERT NEEDED");
         }
 
-
-
-
-
-
-
-        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/ModifyCustomer.fxml"));
-        Scene addPartScene = new Scene(add_product);
-        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        addPartStage.setScene(addPartScene);
-        addPartStage.show();
     }
 
     public void customersBackButton(ActionEvent actionEvent) throws IOException {
