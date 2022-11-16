@@ -67,16 +67,16 @@ public class AppointmentMainController implements Initializable {
             ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
             while (sqlResult.next()) {
 
-                int appointmentId = sqlResult.getInt("Appointments.Appointment_ID");
-                String appointmentTitle = sqlResult.getString("Appointments.Title");
-                String appointmentDescription = sqlResult.getString("Appointments.Description");
-                String appointmentLocation = sqlResult.getString("Appointments.Location");
-                String contactsName = sqlResult.getString("Contacts.Contact_Name");
-                String appointmentType = sqlResult.getString("Appointments.Type");
-                String appointmentStart = sqlResult.getString("Appointments.Start");
-                String appointmentEnd = sqlResult.getString("Appointments.End");
-                String customerName = sqlResult.getString("Customers.Customer_Name");
-                String userName = sqlResult.getString("Users.User_Name");
+                int appointmentId = sqlResult.getInt("Appointment_ID");
+                String appointmentTitle = sqlResult.getString("Title");
+                String appointmentDescription = sqlResult.getString("Description");
+                String appointmentLocation = sqlResult.getString("Location");
+                String contactsName = sqlResult.getString("Contact_Name");
+                String appointmentType = sqlResult.getString("Type");
+                String appointmentStart = sqlResult.getString("Start");
+                String appointmentEnd = sqlResult.getString("End");
+                String customerName = sqlResult.getString("Customer_Name");
+                String userName = sqlResult.getString("User_Name");
 
                 Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerName, userName);
                 appointmentList.addAll(appointment);
