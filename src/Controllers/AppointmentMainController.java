@@ -2,7 +2,6 @@ package Controllers;
 
 import Database.DBConnection;
 import Models.Appointment;
-import Models.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +16,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -133,7 +133,7 @@ public class AppointmentMainController implements Initializable {
         addPartStage.show();
     }
 
-    public void appointmentWeekRadio(ActionEvent actionEvent) {
+    public void appointmentWeekRadio(MouseEvent actionEvent) {
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
                 "Customers.Customer_Name, Users.User_Name FROM Appointments INNER JOIN Customers ON " +
