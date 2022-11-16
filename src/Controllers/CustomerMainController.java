@@ -104,6 +104,30 @@ public class CustomerMainController implements Initializable {
     }
 
     public void customersModifyButton(ActionEvent actionEvent) throws IOException {
+        if(customerMainTableView.getSelectionModel().getSelectedItem() != null) {
+            Customer selectedCustomer = (Customer) customerMainTableView.getSelectionModel().getSelectedItem();
+            System.out.println(selectedCustomer);
+            Parent parent;
+            Stage stage;
+            stage = (Stage) customersModifyButton.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Modify_Part.fxml"));
+            parent = loader.load();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            ModifyCustomerController controller = loader.getController();
+            controller.setCustomer(selectedCustomer);
+//            controller.getCustomerModify();
+        } else {
+//            errorAlert(2);
+            System.out.println("In customersModifyButton Else statement ALERT NEEDED");
+        }
+
+
+
+
+
+
+
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/ModifyCustomer.fxml"));
         Scene addPartScene = new Scene(add_product);
         Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();

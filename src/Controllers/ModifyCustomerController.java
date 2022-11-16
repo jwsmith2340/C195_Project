@@ -1,5 +1,6 @@
 package Controllers;
 
+import Models.Customer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,9 +16,9 @@ import java.io.IOException;
 
 public class ModifyCustomerController {
     @FXML
-    public ComboBox modifyCustomerCountryCombo;
+    public ComboBox<String> modifyCustomerCountryCombo;
     @FXML
-    public ComboBox modifyCustomerDivisionCombo;
+    public ComboBox<String> modifyCustomerDivisionCombo;
     @FXML
     public TextField modifyCustomerNameField;
     @FXML
@@ -29,6 +30,8 @@ public class ModifyCustomerController {
     public Button addCustomerSave;
     public Button addCustomerCancel;
 
+    Customer modifyCustomer;
+
     public void addCustomerSave(ActionEvent actionEvent) {
     }
 
@@ -39,4 +42,23 @@ public class ModifyCustomerController {
         addPartStage.setScene(addPartScene);
         addPartStage.show();
     }
+
+    void setCustomer(Customer customer) {
+
+        modifyCustomer = customer;
+
+//        modifyCustomerIdField.setText(Integer.toString(modifyCustomer.getId()));
+        modifyCustomerNameField.setText(modifyCustomer.getCustomerName());
+        modifyCustomerAddressField.setText(modifyCustomer.getCustomerAddress());
+        modifyCustomerZipField.setText(modifyCustomer.getCustomerPostal());
+        modifyCustomerPhoneField.setText(modifyCustomer.getCustomerPhone());
+        modifyCustomerCountryCombo.getSelectionModel().select(modifyCustomer.getCustomerCountry());
+        modifyCustomerDivisionCombo.getSelectionModel().select(modifyCustomer.getCustomerDivision());
+
+    }
+
+//    public void getCustomerModify(Inventory inv) {
+//        this.inventory = inv;
+//    }
+
 }
