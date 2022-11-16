@@ -27,15 +27,19 @@ public class ModifyCustomerController {
     public TextField modifyCustomerZipField;
     @FXML
     public TextField modifyCustomerPhoneField;
-    public Button addCustomerSave;
-    public Button addCustomerCancel;
+    public Button modifyCustomerSave;
+    public Button modifyCustomerCancel;
+    @FXML
+    public TextField modifyCustomerId;
 
     Customer modifyCustomer;
 
-    public void addCustomerSave(ActionEvent actionEvent) {
+    public void modifyCustomerSave(ActionEvent actionEvent) {
+        System.out.println("Modify Customer Save Button");
+
     }
 
-    public void addCustomerCancel(ActionEvent actionEvent) throws IOException {
+    public void modifyCustomerCancel(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
         Scene addPartScene = new Scene(add_product);
         Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -47,7 +51,7 @@ public class ModifyCustomerController {
 
         modifyCustomer = customer;
 
-//        modifyCustomerIdField.setText(Integer.toString(modifyCustomer.getId()));
+        modifyCustomerId.setText(Integer.toString(modifyCustomer.getCustomerId()));
         modifyCustomerNameField.setText(modifyCustomer.getCustomerName());
         modifyCustomerAddressField.setText(modifyCustomer.getCustomerAddress());
         modifyCustomerZipField.setText(modifyCustomer.getCustomerPostal());
