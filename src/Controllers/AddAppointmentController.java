@@ -129,8 +129,8 @@ public class AddAppointmentController implements Initializable {
             throw new RuntimeException(e);
         }
 
-        addAppointmentCusIdSelector.getItems().clear();
-        addAppointmentCusIdSelector.setItems(userIDs);
+        addAppointmentUserIdSelector.getItems().clear();
+        addAppointmentUserIdSelector.setItems(userIDs);
 
     }
 
