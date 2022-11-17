@@ -50,23 +50,29 @@ public class AddAppointmentController implements Initializable {
     public ComboBox addAppointmentContactCombo;
 
     @FXML
-    ObservableList<String> startTime = FXCollections.observableArrayList();
+    ObservableList<String> availableTimes = FXCollections.observableArrayList();
 
     @FXML
     ObservableList<String> endTime = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("Appointment add page initialized.");
 //        while (sqlResult.next()) {
 //            String country = sqlResult.getString("Country");
 //            countryList.add(country);
 //        }
 
         LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(8);
-        LocalTime endTimeBoxValues = LocalTime.MAX.plusHours(20).plusMinutes(15);
+        LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(1).minusMinutes(45);
 
-        System.out.println(startTimeBoxValues);
-        System.out.println(endTimeBoxValues);
+        while (endTimeBoxValues.isAfter(startTimeBoxValues)) {
+            availableTimes.add(String.valueOf(startTimeBoxValues));
+            startTimeBoxValues.plusMinutes(15);
+        }
+
+        startTimeCombo.setItems(availableTimes);
+        endTimeCombo.setItems(availableTimes);
 //
 //        for (int i = 0; i < 5; i++) {
 //            startTime.plus
