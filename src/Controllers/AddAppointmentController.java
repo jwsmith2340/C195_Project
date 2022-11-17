@@ -134,7 +134,8 @@ public class AddAppointmentController implements Initializable {
 
     }
 
-    public void addAppointmentSaveButton(ActionEvent actionEvent) throws IOException {
+    public void addAppointmentSaveButton(ActionEvent actionEvent) throws IOException, ClassNotFoundException, SQLException {
+        System.out.println("save button clicked");
         java.util.Date datetime = new java.util.Date();
         java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -146,19 +147,46 @@ public class AddAppointmentController implements Initializable {
         String appointmentContact = String.valueOf(addAppointmentContactCombo.getValue());
         String appointmentType = String.valueOf(addAppointmentTypeField.getText());
         LocalDate appointmentDate = addAppointmentDatePicker.getValue();
-        LocalDate appointmentStartTime = (LocalDate) startTimeCombo.getValue();
-        LocalDate appointmentEndTime = (LocalDate) endTimeCombo.getValue();
+        String appointmentStartTime = String.valueOf(startTimeCombo.getValue());
+        String appointmentEndTime = String.valueOf(endTimeCombo.getValue());
+        Integer appointmentCustomerId = Integer.valueOf((String) addAppointmentCusIdSelector.getValue());
+        Integer appointmentUserId = Integer.valueOf((String) addAppointmentUserIdSelector.getValue());
 
-        System.out.println(currentTime);
-        System.out.println(appointmentTitle);
-        System.out.println(appointmentDescription);
-        System.out.println(appointmentLocation);
-        System.out.println(appointmentContact);
-        System.out.println(appointmentType);
-        System.out.println(appointmentDate);
-        System.out.println(appointmentStartTime);
-        System.out.println(appointmentEndTime);
+        Contact contactID = new Contact();
+        System.out.println(contactID.getContactId(appointmentContact));
 
+
+//        System.out.println(currentTime);
+//        System.out.println(appointmentTitle);
+//        System.out.println(appointmentDescription);
+//        System.out.println(appointmentLocation);
+//        System.out.println(appointmentContact);
+//        System.out.println(appointmentType);
+//        System.out.println(appointmentDate);
+//        System.out.println(appointmentStartTime);
+//        System.out.println(appointmentEndTime);
+        System.out.println(appointmentCustomerId);
+        System.out.println(appointmentUserId);
+
+        String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
+                " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+//        preparedStatement.setString(1, appointmentTitle);
+//        preparedStatement.setString(2, appointmentDescription);
+//        preparedStatement.setString(3, appointmentLocation);
+//        preparedStatement.setString(4, appointmentType);
+//        preparedStatement.setString(5, appointmentFormattedStart);
+//        preparedStatement.setString(6, appointmentFormattedEnd);
+//        preparedStatement.setString(7, appointmentCreateDate);
+//        preparedStatement.setString(8, appointmentCreatedBy);
+//        preparedStatement.setString(9, appointmentLastUpdate);
+//        preparedStatement.setString(10, appointmentLastUpdatedBy);
+//        preparedStatement.setInt(11, appointmentCustomerId);
+//        preparedStatement.setInt(12, appointmentUserId);
+//        preparedStatement.setInt(13, );
 
 //
 //        System.out.println(customerCountry);
