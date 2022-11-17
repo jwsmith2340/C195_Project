@@ -43,15 +43,17 @@ public class LoginController implements Initializable {
     public Label loginErrorLabel;
     private ZoneId localZoneId = ZoneId.systemDefault();
     private ResourceBundle rb;
+//    public String locale = String.valueOf(Locale.getDefault());
+    public String locale = "fr_FR"; // Here for manual testing
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Login Page is Initialized");
 
         zoneIdLabel.setText(String.valueOf(localZoneId));
-        String locale = String.valueOf(Locale.getDefault());
         System.out.println(locale);
-//        locale = "fr_FR"; // Manually set locale to France for testing
 
         rb = ResourceBundle.getBundle("/Properties/" + locale);
         headingLabel.setText(rb.getString("heading"));
@@ -79,7 +81,9 @@ public class LoginController implements Initializable {
             addPartStage.setScene(addPartScene);
             addPartStage.show();
         } else {
-            loginErrorLabel.setText("Incorrect Username or Password");
+            rb = ResourceBundle.getBundle("/Properties/" + locale);
+            loginErrorLabel.setText(rb.getString("invalid"));
+
         }
 
     }
@@ -88,4 +92,6 @@ public class LoginController implements Initializable {
         Platform.exit();
     }
 
+//    public void loginPageLogin(ActionEvent actionEvent) {
+//    }
 }
