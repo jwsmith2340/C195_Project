@@ -65,12 +65,14 @@ public class AddAppointmentController implements Initializable {
 
         LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(8);
         LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(1).minusMinutes(45);
-
-        while (endTimeBoxValues.isAfter(startTimeBoxValues)) {
+        int count = 0;
+        while (endTimeBoxValues.isAfter(startTimeBoxValues) && count < 10) {
             System.out.println("In the while");
             availableTimes.add(String.valueOf(startTimeBoxValues));
-            System.out.println(availableTimes);
+//            System.out.println(availableTimes);
             startTimeBoxValues.plusMinutes(15);
+            System.out.println(startTimeBoxValues);
+            count++;
         }
 
         startTimeCombo.setItems(availableTimes);
