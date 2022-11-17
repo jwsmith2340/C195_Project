@@ -65,7 +65,8 @@ public class AppointmentMainController implements Initializable {
 
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
-                "Appointments.Customer_ID, Appointments.User_ID FROM Appointments";
+                "Appointments.Customer_ID, Appointments.User_ID FROM Appointments " +
+                "INNER JOIN Contacts ON Appointments.Contact_ID = Contacts.Contact_ID";
 
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
@@ -136,6 +137,7 @@ public class AppointmentMainController implements Initializable {
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
                 "Appointments.Customer_ID, Appointments.User_ID FROM Appointments " +
+                "INNER JOIN Contacts ON Appointments.Contact_ID = Contacts.Contact_ID " +
                 "WHERE Appointments.Start <= now() + interval 7 day AND appointments.Start >= now();";
 
         try {
@@ -183,6 +185,7 @@ public class AppointmentMainController implements Initializable {
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
                 "Appointments.Customer_ID, Appointments.User_ID FROM Appointments " +
+                "INNER JOIN Contacts ON Appointments.Contact_ID = Contacts.Contact_ID " +
                 "WHERE Appointments.Start <= now() + interval 1 month AND appointments.Start >= now();";
 
         try {
