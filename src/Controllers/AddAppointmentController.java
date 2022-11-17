@@ -143,8 +143,21 @@ public class AddAppointmentController implements Initializable {
         String appointmentTitle = String.valueOf(addAppointmentTitleField.getText());
         String appointmentDescription = String.valueOf(addAppointmentDescriptionField.getText());
         String appointmentLocation = String.valueOf(addAppointmentLocationField.getText());
+        String appointmentContact = String.valueOf(addAppointmentContactCombo.getValue());
         String appointmentType = String.valueOf(addAppointmentTypeField.getText());
         LocalDate appointmentDate = addAppointmentDatePicker.getValue();
+        LocalDate appointmentStartTime = (LocalDate) startTimeCombo.getValue();
+        LocalDate appointmentEndTime = (LocalDate) endTimeCombo.getValue();
+
+        System.out.println(currentTime);
+        System.out.println(appointmentTitle);
+        System.out.println(appointmentDescription);
+        System.out.println(appointmentLocation);
+        System.out.println(appointmentContact);
+        System.out.println(appointmentType);
+        System.out.println(appointmentDate);
+        System.out.println(appointmentStartTime);
+        System.out.println(appointmentEndTime);
 
 
 //
