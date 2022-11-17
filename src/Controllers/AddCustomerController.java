@@ -130,10 +130,12 @@ public class AddCustomerController implements Initializable {
     }
 
     private void setDivisionComboBox(int Country_ID) {
+        divisionList.clear();
         String sqlStatement = "SELECT division FROM first_level_divisions WHERE Country_ID = ?;";
 
         try {
-            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlStatement);
+            PreparedStatement sqlPreparedStatement = DBPreparedStatement.getPreparedStatement();
 
             sqlPreparedStatement.setInt(1, Country_ID);
 
