@@ -118,9 +118,9 @@ public class AddAppointmentController implements Initializable {
         String sqlUserIdStatement = "SELECT User_ID FROM Users ORDER BY User_ID ASC;";
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlUserIdStatement);
-            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
-            while (sqlResult.next()) {
-                String userID = sqlResult.getString("User_ID");
+            ResultSet sqlUserResult = sqlPreparedStatement.executeQuery();
+            while (sqlUserResult.next()) {
+                String userID = sqlUserResult.getString("User_ID");
                 userIDs.add(userID);
             }
         } catch (SQLException e) {
