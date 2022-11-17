@@ -65,9 +65,7 @@ public class AppointmentMainController implements Initializable {
 
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
-                "Customers.Customer_ID, Users.User_ID FROM Appointments INNER JOIN Customers ON " +
-                "Appointments.Customer_ID = Customers.Customer_ID INNER JOIN Users on Appointments.User_ID = " +
-                "Users.User_ID INNER JOIN Contacts on Appointments.Contact_ID = Contacts.Contact_ID";
+                "Appointments.Customer_ID, Appointments.User_ID FROM Appointments";
 
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
@@ -137,9 +135,7 @@ public class AppointmentMainController implements Initializable {
         appointmentList.clear();
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
-                "Customers.Customer_ID, Users.User_ID FROM Appointments INNER JOIN Customers ON " +
-                "Appointments.Customer_ID = Customers.Customer_ID INNER JOIN Users on Appointments.User_ID = Users.User_ID " +
-                "INNER JOIN Contacts on Appointments.Contact_ID = Contacts.Contact_ID " +
+                "Appointments.Customer_ID, Appointments.User_ID FROM Appointments " +
                 "WHERE Appointments.Start <= now() + interval 7 day AND appointments.Start >= now();";
 
         try {
@@ -186,9 +182,7 @@ public class AppointmentMainController implements Initializable {
         appointmentList.clear();
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
-                "Customers.Customer_ID, Users.User_ID FROM Appointments INNER JOIN Customers ON " +
-                "Appointments.Customer_ID = Customers.Customer_ID INNER JOIN Users on Appointments.User_ID = Users.User_ID " +
-                "INNER JOIN Contacts on Appointments.Contact_ID = Contacts.Contact_ID " +
+                "Appointments.Customer_ID, Appointments.User_ID FROM Appointments " +
                 "WHERE Appointments.Start <= now() + interval 1 month AND appointments.Start >= now();";
 
         try {
