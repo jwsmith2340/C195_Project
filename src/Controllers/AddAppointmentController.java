@@ -58,6 +58,8 @@ public class AddAppointmentController implements Initializable {
     ObservableList<String> contactNames = FXCollections.observableArrayList();
     @FXML
     ObservableList<String> customerIDs = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<String> userIDs = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -96,7 +98,7 @@ public class AddAppointmentController implements Initializable {
         addAppointmentContactCombo.getItems().clear();
         addAppointmentContactCombo.setItems(contactNames);
 
-        String sqlCustomerIdStatement = "SELECT Customer_ID FROM Customers;";
+        String sqlCustomerIdStatement = "SELECT Customer_ID FROM Customers ORDER BY Customer_ID ASC;";
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlCustomerIdStatement);
             ResultSet sqlResult = sqlPreparedStatement.executeQuery();
@@ -112,6 +114,23 @@ public class AddAppointmentController implements Initializable {
 
         addAppointmentCusIdSelector.getItems().clear();
         addAppointmentCusIdSelector.setItems(customerIDs);
+
+        String sqlUserIdStatement = "SELECT User_ID FROM Users ORDER BY User_ID ASC;";
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlUserIdStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
+            while (sqlResult.next()) {
+                String userID = sqlResult.getString("User_ID");
+                userIDs.add(userID);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        addAppointmentCusIdSelector.getItems().clear();
+        addAppointmentCusIdSelector.setItems(userIDs);
 
     }
 
@@ -133,7 +152,7 @@ public class AddAppointmentController implements Initializable {
 //        System.out.println(customerDivision);
 ////        String sqlSelectStatement = ""
 //
-//        String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
+//        String sqlInsertStatement = "INSERT INTO customers (User_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
 //                "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?)";
 //
 //        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
@@ -153,7 +172,7 @@ public class AddAppointmentController implements Initializable {
 //            preparedStatement.execute();
 //            if (preparedStatement.getUpdateCount() > 0) {
 //                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-//                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+//                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/UserMain.fxml"));
 //                Scene addPartScene = new Scene(add_product);
 //                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 //                addPartStage.setScene(addPartScene);
