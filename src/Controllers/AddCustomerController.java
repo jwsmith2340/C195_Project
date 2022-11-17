@@ -171,6 +171,7 @@ public class AddCustomerController implements Initializable {
                 sqlResult.next();
 
                 int countryId = sqlResult.getInt("Country_ID");
+                addCustomerDivisionCombo.setDisable(false);
                 setDivisionComboBox(countryId);
 
             } catch (SQLException e) {
