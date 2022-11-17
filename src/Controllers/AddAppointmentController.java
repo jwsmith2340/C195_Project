@@ -2,6 +2,7 @@ package Controllers;
 
 import Database.DBConnection;
 import Database.DBPreparedStatement;
+import Models.Contact;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +18,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
@@ -51,31 +54,64 @@ public class AddAppointmentController implements Initializable {
 
     @FXML
     ObservableList<String> availableTimes = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<String> contactNames = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<String> customerIDs = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Appointment add page initialized.");
-//        while (sqlResult.next()) {
-//            String country = sqlResult.getString("Country");
-//            countryList.add(country);
-//        }
 
         LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(8);
         LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(1).minusMinutes(45);
 
         if (!startTimeBoxValues.equals(0) || !endTimeBoxValues.equals(0)) {
+
             while (startTimeBoxValues.isBefore(endTimeBoxValues)) {
                 availableTimes.add(String.valueOf(startTimeBoxValues));
                 startTimeBoxValues = startTimeBoxValues.plusMinutes(15);
             }
+
         }
 
         startTimeCombo.setItems(availableTimes);
         endTimeCombo.setItems(availableTimes);
-//
-//        for (int i = 0; i < 5; i++) {
-//            startTime.plus
-//        }
+
+        // contacts
+        String sqlContactStatement = "SELECT Contact_Name FROM Contacts;";
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlContactStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
+            while (sqlResult.next()) {
+                String contactName = sqlResult.getString("Contact_Name");
+                contactNames.add(contactName);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        addAppointmentContactCombo.getItems().clear();
+        addAppointmentContactCombo.setItems(contactNames);
+
+        String sqlCustomerIdStatement = "SELECT Customer_ID FROM Customers;";
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlCustomerIdStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
+            while (sqlResult.next()) {
+                String customerID = sqlResult.getString("Customer_ID");
+                customerIDs.add(customerID);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        addAppointmentCusIdSelector.getItems().clear();
+        addAppointmentCusIdSelector.setItems(customerIDs);
 
     }
 
