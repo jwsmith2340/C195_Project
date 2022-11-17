@@ -21,7 +21,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class AddAppointmentController implements Initializable {
@@ -51,6 +53,10 @@ public class AddAppointmentController implements Initializable {
     public ComboBox endTimeCombo;
     @FXML
     public ComboBox addAppointmentContactCombo;
+
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
 
     @FXML
     ObservableList<String> availableTimes = FXCollections.observableArrayList();
@@ -152,19 +158,15 @@ public class AddAppointmentController implements Initializable {
         Integer appointmentCustomerId = Integer.valueOf((String) addAppointmentCusIdSelector.getValue());
         Integer appointmentUserId = Integer.valueOf((String) addAppointmentUserIdSelector.getValue());
 
-        Contact contactID = new Contact();
-        System.out.println(contactID.getContactId(appointmentContact));
+        Contact contactIDCall = new Contact();
+        int contactID = contactIDCall.getContactId(appointmentContact);
 
+        LocalTime appointmentFormattedStartTime = LocalTime.from(LocalDateTime.parse(appointmentStartTime, timeFormatter));
+        LocalTime appointmentFormattedEndTime = LocalTime.from(LocalDateTime.parse(appointmentEndTime, timeFormatter));
 
-//        System.out.println(currentTime);
-//        System.out.println(appointmentTitle);
-//        System.out.println(appointmentDescription);
-//        System.out.println(appointmentLocation);
-//        System.out.println(appointmentContact);
-//        System.out.println(appointmentType);
-//        System.out.println(appointmentDate);
-//        System.out.println(appointmentStartTime);
-//        System.out.println(appointmentEndTime);
+        LocalTime appointmentFormattedStart = LocalTime.from(LocalDateTime.of(appointmentDate, appointmentFormattedStartTime));
+        LocalTime appointmentFormattedEnd = LocalTime.from(LocalDateTime.of(appointmentDate, appointmentFormattedEndTime));
+
         System.out.println(appointmentCustomerId);
         System.out.println(appointmentUserId);
 
@@ -174,56 +176,35 @@ public class AddAppointmentController implements Initializable {
         DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
         PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
 
-//        preparedStatement.setString(1, appointmentTitle);
-//        preparedStatement.setString(2, appointmentDescription);
-//        preparedStatement.setString(3, appointmentLocation);
-//        preparedStatement.setString(4, appointmentType);
-//        preparedStatement.setString(5, appointmentFormattedStart);
-//        preparedStatement.setString(6, appointmentFormattedEnd);
-//        preparedStatement.setString(7, appointmentCreateDate);
-//        preparedStatement.setString(8, appointmentCreatedBy);
-//        preparedStatement.setString(9, appointmentLastUpdate);
-//        preparedStatement.setString(10, appointmentLastUpdatedBy);
-//        preparedStatement.setInt(11, appointmentCustomerId);
-//        preparedStatement.setInt(12, appointmentUserId);
-//        preparedStatement.setInt(13, );
+        preparedStatement.setString(1, appointmentTitle);
+        preparedStatement.setString(2, appointmentDescription);
+        preparedStatement.setString(3, appointmentLocation);
+        preparedStatement.setString(4, appointmentType);
+        preparedStatement.setString(5, String.valueOf(appointmentFormattedStart));
+        preparedStatement.setString(6, String.valueOf(appointmentFormattedEnd));
+        preparedStatement.setString(7, currentTime);
+        preparedStatement.setString(8, "Whoever made it");
+        preparedStatement.setString(9, currentTime);
+        preparedStatement.setString(10, "Whoever updated it");
+        preparedStatement.setInt(11, appointmentCustomerId);
+        preparedStatement.setInt(12, appointmentUserId);
+        preparedStatement.setInt(13, contactID);
 
-//
-//        System.out.println(customerCountry);
-//        System.out.println(customerDivision);
-////        String sqlSelectStatement = ""
-//
-//        String sqlInsertStatement = "INSERT INTO customers (User_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
-//                "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?)";
-//
-//        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
-//        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
-//
-//        preparedStatement.setString(1, customerName);
-//        preparedStatement.setString(2, customerAddress);
-//        preparedStatement.setString(3, customerPostal);
-//        preparedStatement.setString(4, customerPhone);
-//        preparedStatement.setString(5, currentTime);
-//        preparedStatement.setString(6, "user");
-//        preparedStatement.setString(7, currentTime);
-//        preparedStatement.setString(8, "user");
-//        preparedStatement.setInt(9, 66);
-//
-//        try {
-//            preparedStatement.execute();
-//            if (preparedStatement.getUpdateCount() > 0) {
-//                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-//                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/UserMain.fxml"));
-//                Scene addPartScene = new Scene(add_product);
-//                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-//                addPartStage.setScene(addPartScene);
-//                addPartStage.show();
-//            } else {
-//                System.out.println("An error occurred and no customers were created.");
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
+        try {
+            preparedStatement.execute();
+            if (preparedStatement.getUpdateCount() > 0) {
+                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                Scene addPartScene = new Scene(add_product);
+                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                addPartStage.setScene(addPartScene);
+                addPartStage.show();
+            } else {
+                System.out.println("An error occurred and no customers were created.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 
