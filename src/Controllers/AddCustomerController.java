@@ -48,7 +48,7 @@ public class AddCustomerController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setCountryComboBox();
-        setDivisionComboBox();
+//        setDivisionComboBox();
     }
 
     public void addCustomerSave(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
@@ -61,8 +61,12 @@ public class AddCustomerController implements Initializable {
         String customerAddress = String.valueOf(addCustomerAddressField.getText());
         String customerPostal = String.valueOf(addCustomerZipField.getText());
         String customerPhone = String.valueOf(addCustomerPhoneField.getText());
-//        String customerCountry = String.valueOf(addCustomerCountryCombo.getValue());
+        String customerCountry = String.valueOf(addCustomerCountryCombo.getValue());
         String customerDivision = String.valueOf(addCustomerDivisionCombo.getValue());
+
+        System.out.println(customerCountry);
+        System.out.println(customerDivision);
+//        String sqlSelectStatement = ""
 
         String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
                 "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?)";
@@ -125,10 +129,14 @@ public class AddCustomerController implements Initializable {
         addCustomerCountryCombo.getItems().addAll(countryList);
     }
 
-    private void setDivisionComboBox() {
-        String sqlStatement = "SELECT division FROM first_level_divisions;";
+    private void setDivisionComboBox(int Country_ID) {
+        String sqlStatement = "SELECT division FROM first_level_divisions WHERE Country_ID = ?;";
+
         try {
             PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+
+            sqlPreparedStatement.setInt(1, Country_ID);
+
             ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
             while (sqlResult.next()) {
 
@@ -149,4 +157,31 @@ public class AddCustomerController implements Initializable {
         return 1;
     }
 
+    public void addCustomerCountryCombo(ActionEvent actionEvent) {
+        String countryName = addCustomerCountryCombo.getSelectionModel().getSelectedItem();
+
+        String sqlStatement = "SELECT Country_ID FROM Countries WHERE Country_Name = ?;";
+
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+            sqlPreparedStatement.setString(1, countryName);
+
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            try {
+                sqlResult.next();
+
+                int countryId = sqlResult.getInt("Country_ID");
+                setDivisionComboBox(countryId);
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
 }
