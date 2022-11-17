@@ -13,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -232,6 +231,7 @@ public class AppointmentMainController implements Initializable {
 
 
     public void appointmentAll(ActionEvent actionEvent) {
+        appointmentList.clear();
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
                 "Appointments.Customer_ID, Appointments.User_ID FROM Appointments " +
