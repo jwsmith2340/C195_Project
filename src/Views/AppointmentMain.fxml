@@ -33,7 +33,7 @@
       <Button fx:id="appointmentAddButton" layoutX="32.0" layoutY="500.0" mnemonicParsing="false" onAction="#appointmentAddButton" text="Add" />
       <Button fx:id="appointmentModifyButton" layoutX="127.0" layoutY="500.0" mnemonicParsing="false" onAction="#appointmentModifyButton" text="Modify" />
       <Button fx:id="appointmentBackButton" layoutX="1041.0" layoutY="500.0" mnemonicParsing="false" onAction="#appointmentBackButton" text="Back" />
-      <RadioButton fx:id="appointmentWeekRadio" layoutX="668.0" layoutY="38.0" mnemonicParsing="false" onMouseClicked="#appointmentWeekRadio" prefHeight="17.0" prefWidth="87.0" text="This Week">
+      <RadioButton fx:id="appointmentWeekRadio" layoutX="668.0" layoutY="38.0" mnemonicParsing="false" onAction="#appointmentWeekRadio" onMouseClicked="#appointmentWeekRadio" prefHeight="17.0" prefWidth="87.0" text="This Week">
          <toggleGroup>
             <ToggleGroup fx:id="timeRangeToggleGroup" />
          </toggleGroup></RadioButton>
