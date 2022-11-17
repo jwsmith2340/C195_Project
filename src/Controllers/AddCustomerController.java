@@ -160,7 +160,7 @@ public class AddCustomerController implements Initializable {
     public void addCustomerCountryCombo(ActionEvent actionEvent) {
         String countryName = addCustomerCountryCombo.getSelectionModel().getSelectedItem();
         System.out.println(countryName);
-        String sqlStatement = "SELECT Country_ID FROM Countries WHERE Country_Name = ?;";
+        String sqlStatement = "SELECT Country_ID FROM Countries WHERE Country = ?;";
 
         try {
             DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlStatement);
@@ -168,7 +168,7 @@ public class AddCustomerController implements Initializable {
 
             sqlPreparedStatement.setString(1, countryName);
 
-            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
             try {
                 sqlResult.next();
 
