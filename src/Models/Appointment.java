@@ -10,10 +10,10 @@ public class Appointment {
     private String appointmentType;
     private String appointmentStart;
     private String appointmentEnd;
-    private String customerName;
-    private String userName;
+    private int customerId;
+    private int userId;
 
-    public Appointment(int appointmentId, String appointmentTitle, String appointmentDescription, String appointmentLocation, String contactsName, String appointmentType, String appointmentStart, String appointmentEnd, String customerName, String userName) {
+    public Appointment(int appointmentId, String appointmentTitle, String appointmentDescription, String appointmentLocation, String contactsName, String appointmentType, String appointmentStart, String appointmentEnd, int customerId, int userId) {
         this.appointmentId = appointmentId;
         this.appointmentTitle = appointmentTitle;
         this.appointmentDescription = appointmentDescription;
@@ -22,8 +22,8 @@ public class Appointment {
         this.appointmentType = appointmentType;
         this.appointmentStart = appointmentStart;
         this.appointmentEnd = appointmentEnd;
-        this.customerName = customerName;
-        this.userName = userName;
+        this.customerId = customerId;
+        this.userId = userId;
     }
 
     public int getAppointmentId() {
@@ -90,20 +90,20 @@ public class Appointment {
         this.appointmentEnd = appointmentEnd;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
-    public String getUserName() {
-        return userName;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
 }

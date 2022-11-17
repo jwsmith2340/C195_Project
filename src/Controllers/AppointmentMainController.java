@@ -82,10 +82,10 @@ public class AppointmentMainController implements Initializable {
                 String appointmentType = sqlResult.getString("Type");
                 String appointmentStart = sqlResult.getString("Start");
                 String appointmentEnd = sqlResult.getString("End");
-                String customerName = sqlResult.getString("Customer_Name");
-                String userName = sqlResult.getString("User_Name");
+                int customerId = sqlResult.getInt("Customer_ID");
+                int userId = sqlResult.getInt("User_ID");
 
-                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerName, userName);
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerId, userId);
                 appointmentList.addAll(appointment);
 
                 appointmentColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
@@ -96,8 +96,8 @@ public class AppointmentMainController implements Initializable {
                 typeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
                 startDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
                 endDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
-                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-                userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
+                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
             }
         } catch (SQLException e) {
@@ -155,10 +155,10 @@ public class AppointmentMainController implements Initializable {
                 String appointmentType = sqlResult.getString("Type");
                 String appointmentStart = sqlResult.getString("Start");
                 String appointmentEnd = sqlResult.getString("End");
-                String customerName = sqlResult.getString("Customer_Name");
-                String userName = sqlResult.getString("User_Name");
+                int customerId = sqlResult.getInt("Customer_ID");
+                int userId = sqlResult.getInt("User_ID");
 
-                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerName, userName);
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerId, userId);
                 appointmentList.addAll(appointment);
 
                 appointmentColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
@@ -169,8 +169,8 @@ public class AppointmentMainController implements Initializable {
                 typeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
                 startDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
                 endDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
-                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-                userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
+                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
             }
         } catch (SQLException e) {
@@ -204,10 +204,10 @@ public class AppointmentMainController implements Initializable {
                 String appointmentType = sqlResult.getString("Type");
                 String appointmentStart = sqlResult.getString("Start");
                 String appointmentEnd = sqlResult.getString("End");
-                String customerName = sqlResult.getString("Customer_Name");
-                String userName = sqlResult.getString("User_Name");
+                int customerId = sqlResult.getInt("Customer_ID");
+                int userId = sqlResult.getInt("User_ID");
 
-                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerName, userName);
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerId, userId);
                 appointmentList.addAll(appointment);
 
                 appointmentColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
@@ -218,8 +218,8 @@ public class AppointmentMainController implements Initializable {
                 typeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
                 startDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
                 endDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
-                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-                userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
+                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
             }
         } catch (SQLException e) {
