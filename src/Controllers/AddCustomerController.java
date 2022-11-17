@@ -139,7 +139,7 @@ public class AddCustomerController implements Initializable {
 
             sqlPreparedStatement.setInt(1, Country_ID);
 
-            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
             while (sqlResult.next()) {
 
                 String division = sqlResult.getString("Division");
