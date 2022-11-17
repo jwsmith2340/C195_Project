@@ -52,9 +52,6 @@ public class AddAppointmentController implements Initializable {
     @FXML
     ObservableList<String> availableTimes = FXCollections.observableArrayList();
 
-    @FXML
-    ObservableList<String> endTime = FXCollections.observableArrayList();
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Appointment add page initialized.");
@@ -65,12 +62,12 @@ public class AddAppointmentController implements Initializable {
 
         LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(8);
         LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(1).minusMinutes(45);
-        int count = 0;
-        while (endTimeBoxValues.isAfter(startTimeBoxValues)) {
-            System.out.println("In the while");
-            availableTimes.add(String.valueOf(startTimeBoxValues));
-            System.out.println(availableTimes);
-            startTimeBoxValues = startTimeBoxValues.plusMinutes(15);
+
+        if (!startTimeBoxValues.equals(0) || !endTimeBoxValues.equals(0)) {
+            while (startTimeBoxValues.isBefore(endTimeBoxValues)) {
+                availableTimes.add(String.valueOf(startTimeBoxValues));
+                startTimeBoxValues = startTimeBoxValues.plusMinutes(15);
+            }
         }
 
         startTimeCombo.setItems(availableTimes);
