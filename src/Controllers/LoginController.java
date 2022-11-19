@@ -77,7 +77,9 @@ public class LoginController implements Initializable {
         sqlResult.next();
         if (sqlResult.getInt("total") == 1) {
 
-            String appointmentSqlStatemtnt = "SELECT COUNT(*) apptTotal FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
+
+            // $$$$$$$$$$$$$$
+            String appointmentSqlStatemtnt = "SELECT COUNT(*) apptTotal, Appointment_ID, Start FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
 
             PreparedStatement sqlAppointmentPreparedStatement = DBConnection.startConnection().prepareStatement(appointmentSqlStatemtnt);
             ResultSet appointmentSqlResult = sqlAppointmentPreparedStatement.executeQuery();
@@ -85,10 +87,21 @@ public class LoginController implements Initializable {
 
             if (appointmentSqlResult.getInt("apptTotal") == 1) {
 
+                int appointmentId = appointmentSqlResult.getInt("Appointment_ID");
+                String appointmentTime = appointmentSqlResult.getString("Start");
+
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Appointment");
                 alert.setHeaderText("Appointment Reminder");
-                alert.setContentText("An appointment is scheduled in the next 15 minutes.");
+                alert.setContentText("Appointment " + appointmentId + " is scheduled in the next 15 minutes at " + appointmentTime + ".");
+                alert.showAndWait();
+
+            } else {
+
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Appointment");
+                alert.setHeaderText("Appointment Reminder");
+                alert.setContentText("There are no appointments scheduled in the next 15 minutes.");
                 alert.showAndWait();
 
             }
