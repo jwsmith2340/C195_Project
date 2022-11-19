@@ -66,8 +66,8 @@ public class AddCustomerController implements Initializable {
         String customerDivision = String.valueOf(addCustomerDivisionCombo.getValue());
 
         Customer customer = new Customer();
-        int customerCountryId = customer.getCustomerCountryId(customerCountry);
-        int customerDivisionId = customer.getCustomerDivisionId(customerDivision);
+        Integer customerCountryId = customer.getCustomerCountryId(customerCountry);
+        Integer customerDivisionId = customer.getCustomerDivisionId(customerDivision);
 
         System.out.println(customerCountryId);
         System.out.println(customerDivisionId);
@@ -197,7 +197,7 @@ public class AddCustomerController implements Initializable {
 
     }
 
-    public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone, int customerCountry, int customerDivision) {
+    public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone, Integer customerCountry, Integer customerDivision) {
 
         boolean validationResult = true;
 
@@ -221,16 +221,12 @@ public class AddCustomerController implements Initializable {
             validationResult = false;
         }
 
-        try {
-            Integer countryValidation = customerCountry;
-        } catch (Exception e) {
+        if (customerCountry == null) {
             errorAlert(5);
             validationResult = false;
         }
 
-        try {
-            Integer divisionValidation = customerDivision;
-        } catch (Exception e) {
+        if (customerDivision == null) {
             errorAlert(6);
             validationResult = false;
         }
