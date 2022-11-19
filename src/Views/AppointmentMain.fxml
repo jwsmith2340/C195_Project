@@ -39,5 +39,6 @@
          </toggleGroup></RadioButton>
       <RadioButton fx:id="appointmentMonthRadio" layoutX="812.0" layoutY="38.0" mnemonicParsing="false" onAction="#appointmentMonthRadio" prefHeight="17.0" prefWidth="102.0" text="This Month" toggleGroup="$timeRangeToggleGroup" />
       <RadioButton fx:id="appointmentAll" layoutX="947.0" layoutY="38.0" mnemonicParsing="false" onAction="#appointmentAll" selected="true" text="All Appointments" toggleGroup="$timeRangeToggleGroup" />
+      <Button fx:id="appointmentDeleteButton" layoutX="233.0" layoutY="500.0" mnemonicParsing="false" onAction="#appointmentDeleteButton" text="Delete" />
    </children>
 </AnchorPane>

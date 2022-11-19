@@ -1,6 +1,7 @@
 package Controllers;
 
 import Database.DBConnection;
+import Database.DBPreparedStatement;
 import Models.Appointment;
 import Models.Customer;
 import javafx.collections.FXCollections;
@@ -54,6 +55,7 @@ public class AppointmentMainController implements Initializable {
     public RadioButton appointmentMonthRadio;
     public RadioButton appointmentAll;
     public ToggleGroup timeRangeToggleGroup;
+    public Button appointmentDeleteButton;
     @FXML
     ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
@@ -288,5 +290,40 @@ public class AppointmentMainController implements Initializable {
 
         appointmentsTableView.setItems(appointmentList);
 
+    }
+
+    public void appointmentDeleteButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
+
+        if(appointmentsTableView.getSelectionModel().getSelectedItem() != null) {
+            Appointment selectedAppointment = (Appointment) appointmentsTableView.getSelectionModel().getSelectedItem();
+            Integer appointmentId = selectedAppointment.getAppointmentId();
+
+            String sqlCascadeDeleteStatement = "DELETE FROM Appointments WHERE Appointment_ID = ?";
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlCascadeDeleteStatement);
+            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+            preparedStatement.setInt(1, appointmentId);
+            // Deletes the customer's appointments first
+
+            try {
+                preparedStatement.execute();
+                if (preparedStatement.getUpdateCount() > 0) {
+                    System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                    Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                    Scene addPartScene = new Scene(add_product);
+                    Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    addPartStage.setScene(addPartScene);
+                    addPartStage.show();
+                } else {
+                    System.out.println("An error occurred and the appointment wasn't deleted.");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+        } else {
+//            errorAlert(2);
+            System.out.println("In appointmentsDeleteButton Else statement ALERT NEEDED");
+        }
     }
 }

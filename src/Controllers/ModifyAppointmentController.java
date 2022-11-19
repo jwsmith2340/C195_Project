@@ -69,7 +69,7 @@ public class ModifyAppointmentController {
         startTimeCombo.setValue(parsedStartTime);
         endTimeCombo.setValue(parsedEndTime);
         modifyAppointmentCusIdSelector.setValue(selectedAppointment.getCustomerId());
-        modifyAppointmentCusIdSelector.setValue(selectedAppointment.getUserId());
+        modifyAppointmentUserIdSelector.setValue(selectedAppointment.getUserId());
 
     }
 
