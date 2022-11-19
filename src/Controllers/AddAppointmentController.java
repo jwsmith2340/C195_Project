@@ -159,68 +159,82 @@ public class AddAppointmentController implements Initializable {
         Integer appointmentCustomerId = Integer.valueOf((String) addAppointmentCusIdSelector.getValue());
         Integer appointmentUserId = Integer.valueOf((String) addAppointmentUserIdSelector.getValue());
 
-        System.out.println(appointmentStartTime);
+        System.out.println(appointmentDate);
 
-        Contact contactIDCall = new Contact();
-        int contactID = contactIDCall.getContactId(appointmentContact);
+        if (appointmentContact != "null") {
 
-        String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
-        String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
 
-        String[] startTime = appointmentStartTime.split(":");
-        String startTimeFull = startTime[0] + startTime[1];
-        int startTimeInt = Integer.parseInt(startTimeFull);
 
-        String[] endTime = appointmentEndTime.split(":");
-        String endTimeFull = endTime[0] + endTime[1];
-        int endTimeInt = Integer.parseInt(endTimeFull);
+            System.out.println(appointmentStartTime);
 
-        if (endTimeInt > startTimeInt) {
-            boolean go = false;
+            Contact contactIDCall = new Contact();
+            int contactID = contactIDCall.getContactId(appointmentContact);
 
-            // Change this, just here to prevent going into the block
-            if (go) {
+            String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
+            String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
 
-                String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
-                        " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String[] startTime = appointmentStartTime.split(":");
+            String startTimeFull = startTime[0] + startTime[1];
+            int startTimeInt = Integer.parseInt(startTimeFull);
 
-                DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
-                PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+            String[] endTime = appointmentEndTime.split(":");
+            String endTimeFull = endTime[0] + endTime[1];
+            int endTimeInt = Integer.parseInt(endTimeFull);
 
-                preparedStatement.setString(1, appointmentTitle);
-                preparedStatement.setString(2, appointmentDescription);
-                preparedStatement.setString(3, appointmentLocation);
-                preparedStatement.setString(4, appointmentType);
-                preparedStatement.setString(5, String.valueOf(startDateFormatted));
-                preparedStatement.setString(6, String.valueOf(endDateFormatted));
-                preparedStatement.setString(7, currentTime);
-                preparedStatement.setString(8, "Whoever made it");
-                preparedStatement.setString(9, currentTime);
-                preparedStatement.setString(10, "Whoever updated it");
-                preparedStatement.setInt(11, appointmentCustomerId);
-                preparedStatement.setInt(12, appointmentUserId);
-                preparedStatement.setInt(13, contactID);
+            if (endTimeInt > startTimeInt) {
 
-                try {
-                    preparedStatement.execute();
-                    if (preparedStatement.getUpdateCount() > 0) {
-                        System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
-                        Scene addPartScene = new Scene(add_product);
-                        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                        addPartStage.setScene(addPartScene);
-                        addPartStage.show();
-                    } else {
-                        System.out.println("An error occurred and no customers were created.");
+                if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
+                    boolean go = false;
+
+                    // Change this, just here to prevent going into the block
+                    if (go) {
+
+                        String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
+                                " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+                        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                        preparedStatement.setString(1, appointmentTitle);
+                        preparedStatement.setString(2, appointmentDescription);
+                        preparedStatement.setString(3, appointmentLocation);
+                        preparedStatement.setString(4, appointmentType);
+                        preparedStatement.setString(5, String.valueOf(startDateFormatted));
+                        preparedStatement.setString(6, String.valueOf(endDateFormatted));
+                        preparedStatement.setString(7, currentTime);
+                        preparedStatement.setString(8, "Whoever made it");
+                        preparedStatement.setString(9, currentTime);
+                        preparedStatement.setString(10, "Whoever updated it");
+                        preparedStatement.setInt(11, appointmentCustomerId);
+                        preparedStatement.setInt(12, appointmentUserId);
+                        preparedStatement.setInt(13, contactID);
+
+                        try {
+                            preparedStatement.execute();
+                            if (preparedStatement.getUpdateCount() > 0) {
+                                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                                Scene addPartScene = new Scene(add_product);
+                                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                                addPartStage.setScene(addPartScene);
+                                addPartStage.show();
+                            } else {
+                                System.out.println("An error occurred and no customers were created.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+
                     }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+
                 }
 
+            } else {
+                errorAlert(7);
             }
 
         } else {
-            errorAlert(7);
+            errorAlert(5);
         }
 
     }
@@ -242,42 +256,70 @@ public class AddAppointmentController implements Initializable {
     public void endTimeCombo(ActionEvent actionEvent) {
     }
 
+    public boolean appointmentFieldTypeValidation(String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType) {
+
+        boolean validationResult = true;
+
+        if (appointmentTitle.length() == 0) {
+            errorAlert(1);
+            validationResult = false;
+        }
+
+        if (appointmentDescription.length() == 0) {
+            errorAlert(2);
+            validationResult = false;
+        }
+
+        if (appointmentLocation.length() == 0) {
+            errorAlert(3);
+            validationResult = false;
+        }
+
+        if (appointmentType.length() == 0) {
+            errorAlert(4);
+            validationResult = false;
+        }
+
+        return validationResult;
+
+    }
+
     private void errorAlert(int errorCode) {
         if(errorCode == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Name Validation");
-            alert.setContentText("Please enter a name to create a new customer record.");
+            alert.setHeaderText("Title Validation");
+            alert.setContentText("Please enter a title to create a new appointment.");
             alert.showAndWait();
         } else if(errorCode == 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Address Validation");
-            alert.setContentText("Please enter an address to create a new customer record.");
+            alert.setHeaderText("Description Validation");
+            alert.setContentText("Please enter a description to create a new appointment.");
             alert.showAndWait();
         } else if(errorCode == 3) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Postal Code Validation");
-            alert.setContentText("Please enter a postal code to create a new customer record.");
+            alert.setHeaderText("Location Validation");
+            alert.setContentText("Please enter a location to create a new appointment.");
             alert.showAndWait();
         } else if(errorCode == 4) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Phone Number Validation");
-            alert.setContentText("Please enter a phone number to create a new customer record.");
+            alert.setHeaderText("Appointment type Validation");
+            alert.setContentText("Please enter an appointment type to create a new appointment.");
             alert.showAndWait();
         } else if(errorCode == 5) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Country Validation");
-            alert.setContentText("Please enter a country to create a new customer record.");
+            alert.setHeaderText("Contact Validation");
+            alert.setContentText("Please enter a contact to create a new appointment.");
             alert.showAndWait();
         } else if(errorCode == 6) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Division Validation");
-            alert.setContentText("Please enter a first level division to create a new customer record.");
+            alert.setContentText("Please enter a title to create a new appointment.");
             alert.showAndWait();
         } else if(errorCode == 7) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
