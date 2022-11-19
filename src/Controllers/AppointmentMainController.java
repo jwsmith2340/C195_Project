@@ -297,11 +297,12 @@ public class AppointmentMainController implements Initializable {
         if(appointmentsTableView.getSelectionModel().getSelectedItem() != null) {
             Appointment selectedAppointment = (Appointment) appointmentsTableView.getSelectionModel().getSelectedItem();
             Integer appointmentId = selectedAppointment.getAppointmentId();
+            String appointmentType = selectedAppointment.getAppointmentType();
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Appointments");
             alert.setHeaderText("Cancel");
-            alert.setContentText("Do you want to cancel this appointment?");
+            alert.setContentText("Do you want to cancel appointment # " + appointmentId + " (" + appointmentType + " type appointment)?");
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
