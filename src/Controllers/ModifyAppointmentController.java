@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class ModifyAppointmentController {
 
@@ -49,14 +50,26 @@ public class ModifyAppointmentController {
 
         modifyAppointment = selectedAppointment;
 
+        String rawDate = String.valueOf(selectedAppointment.getAppointmentStart());
+        String[] apptDate = rawDate.split(" ");
+        String parsedDate = apptDate[0];
+        String parsedStartTime = apptDate[1];
+
+        String rawEnd = String.valueOf(selectedAppointment.getAppointmentEnd());
+        String[] endTime = rawEnd.split(" ");
+        String parsedEndTime = endTime[1];
+
         modifyAppointmentIdField.setText(Integer.toString(selectedAppointment.getAppointmentId()));
         modifyAppointmentTitleField.setText(selectedAppointment.getAppointmentTitle());
         modifyAppointmentDescriptionField.setText(selectedAppointment.getAppointmentDescription());
         modifyAppointmentLocationField.setText(selectedAppointment.getAppointmentLocation());
         modifyAppointmentContactCombo.getSelectionModel().select(selectedAppointment.getContactsName());
         modifyAppointmentTypeField.setText(selectedAppointment.getAppointmentType());
-//        modifyapp.getSelectionModel().select(selectedAppointment.);
-//        .getSelectionModel().select(selectedAppointment.);
+        modifyAppointmentDatePicker.setValue(LocalDate.parse(parsedDate));
+        startTimeCombo.setValue(parsedStartTime);
+        endTimeCombo.setValue(parsedEndTime);
+        modifyAppointmentCusIdSelector.setValue(selectedAppointment.getCustomerId());
+        modifyAppointmentCusIdSelector.setValue(selectedAppointment.getUserId());
 
     }
 

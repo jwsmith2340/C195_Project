@@ -133,12 +133,6 @@ public class AppointmentMainController implements Initializable {
             System.out.println("In customersModifyButton Else statement ALERT NEEDED");
         }
 
-
-//        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/ModifyAppointment.fxml"));
-//        Scene addPartScene = new Scene(add_product);
-//        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-//        addPartStage.setScene(addPartScene);
-//        addPartStage.show();
     }
 
     public void appointmentBackButton(ActionEvent actionEvent) throws IOException {
