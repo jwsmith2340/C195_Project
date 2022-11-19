@@ -159,17 +159,23 @@ public class AddAppointmentController implements Initializable {
         Integer appointmentCustomerId = Integer.valueOf((String) addAppointmentCusIdSelector.getValue());
         Integer appointmentUserId = Integer.valueOf((String) addAppointmentUserIdSelector.getValue());
 
+        System.out.println(appointmentStartTime);
+
         Contact contactIDCall = new Contact();
         int contactID = contactIDCall.getContactId(appointmentContact);
 
         String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
         String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
 
-        String startTimeInt = String.valueOf(appointmentStartTime.split(":"));
+        String[] startTime = appointmentStartTime.split(":");
+        String startTimeFull = startTime[0] + startTime[1];
+        int startTimeInt = Integer.parseInt(startTimeFull);
         System.out.println(startTimeInt);
 
+        boolean go = false;
+
         // Change this, just here to prevent going into the block
-        if (startDateFormatted == "null") {
+        if (go) {
 
             String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
                     " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
