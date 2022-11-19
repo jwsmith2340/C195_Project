@@ -11,9 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -24,6 +22,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CustomerMainController implements Initializable {
@@ -141,51 +140,77 @@ public class CustomerMainController implements Initializable {
             Customer selectedCustomer = (Customer) customerMainTableView.getSelectionModel().getSelectedItem();
             Integer customerId = selectedCustomer.getCustomerId();
 
-            String sqlCascadeDeleteStatement = "DELETE FROM Appointments WHERE Customer_ID = ?";
-            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlCascadeDeleteStatement);
-            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Parts");
+            alert.setHeaderText("Delete");
+            alert.setContentText("Do you want to delete this customer?");
 
-            preparedStatement.setInt(1, customerId);
-            // Deletes the customer's appointments first
-            try {
-                preparedStatement.execute();
-                if (preparedStatement.getUpdateCount() > 0) {
-                    System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                } else {
-                    System.out.println("An error occurred and the customer's appointments weren't deleted.");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+
+                String sqlCascadeDeleteStatement = "DELETE FROM Appointments WHERE Customer_ID = ?";
+                DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlCascadeDeleteStatement);
+                PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                preparedStatement.setInt(1, customerId);
+                // Deletes the customer's appointments first
+                try {
+                    preparedStatement.execute();
+                    if (preparedStatement.getUpdateCount() > 0) {
+                        System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                    } else {
+                        System.out.println("An error occurred and the customer's appointments weren't deleted.");
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+
+                String sqlDeleteStatement = "DELETE FROM Customers WHERE Customer_ID = ?";
+
+                DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlDeleteStatement);
+                PreparedStatement secondPreparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                secondPreparedStatement.setInt(1, customerId);
+                // This logic needs updated to parse the country/division info for validation and then return int div_id value,
+                // also don't forget to validate if the country and division.country id matches
+
+                try {
+                    secondPreparedStatement.execute();
+                    if (secondPreparedStatement.getUpdateCount() > 0) {
+                        System.out.println("Number of rows affected: " + secondPreparedStatement.getUpdateCount());
+                        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+                        Scene addPartScene = new Scene(add_product);
+                        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                        addPartStage.setScene(addPartScene);
+                        addPartStage.show();
+                    } else {
+                        System.out.println("An error occurred and the customer wasn't deleted.");
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
             }
 
-            String sqlDeleteStatement = "DELETE FROM Customers WHERE Customer_ID = ?";
-
-            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlDeleteStatement);
-            PreparedStatement secondPreparedStatement = DBPreparedStatement.getPreparedStatement();
-
-            secondPreparedStatement.setInt(1, customerId);
-            // This logic needs updated to parse the country/division info for validation and then return int div_id value,
-            // also don't forget to validate if the country and division.country id matches
-
-            try {
-                secondPreparedStatement.execute();
-                if (secondPreparedStatement.getUpdateCount() > 0) {
-                    System.out.println("Number of rows affected: " + secondPreparedStatement.getUpdateCount());
-                    Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
-                    Scene addPartScene = new Scene(add_product);
-                    Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                    addPartStage.setScene(addPartScene);
-                    addPartStage.show();
-                } else {
-                    System.out.println("An error occurred and the customer wasn't deleted.");
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
 
         } else {
-//            errorAlert(2);
-            System.out.println("In customersDeleteButton Else statement ALERT NEEDED");
+            errorAlert(1);
+        }
+    }
+
+    private void errorAlert(int errorCode) {
+        if(errorCode == 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Delete Customer");
+            alert.setContentText("Please select a customer to delete.");
+            alert.showAndWait();
+        } else if(errorCode == 2) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Modify Part Error");
+            alert.setContentText("Please select a part to modify.");
+            alert.showAndWait();
         }
     }
 }
