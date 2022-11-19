@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -69,37 +70,57 @@ public class ModifyCustomerController implements Initializable {
         String customerCountry = String.valueOf(modifyCustomerCountryCombo.getValue());
         String customerDivision = String.valueOf(modifyCustomerDivisionCombo.getValue());
 
-        String sqlUpdateStatement = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, " +
-                "Last_Update = ?, Last_Updated_By = ?, Division_ID = ? WHERE customer_id = ?";
+        if (customerCountry != "null") {
 
-        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlUpdateStatement);
-        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+            if (customerDivision != "null") {
 
-        preparedStatement.setString(1, customerName);
-        preparedStatement.setString(2, customerAddress);
-        preparedStatement.setString(3, customerZip);
-        preparedStatement.setString(4, customerPhone);
-        preparedStatement.setString(5, currentTime);
-        preparedStatement.setString(6, "updating user LOGIC NEEDED");
-        preparedStatement.setInt(7, 66);
-        preparedStatement.setInt(8, customerId);
-        // This logic needs updated to parse the country/division info for validation and then return int div_id value,
-        // also don't forget to validate if the country and division.country id matches
+                Customer customer = new Customer();
+                Integer customerCountryId = customer.getCustomerCountryId(customerCountry);
+                Integer customerDivisionId = customer.getCustomerDivisionId(customerDivision);
 
-        try {
-            preparedStatement.execute();
-            if (preparedStatement.getUpdateCount() > 0) {
-                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
-                Scene addPartScene = new Scene(add_product);
-                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                addPartStage.setScene(addPartScene);
-                addPartStage.show();
+                if (customerFieldTypeValidation(customerName, customerAddress, customerZip, customerPhone)) {
+
+                    String sqlUpdateStatement = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, " +
+                            "Last_Update = ?, Last_Updated_By = ?, Division_ID = ? WHERE customer_id = ?";
+
+                    DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlUpdateStatement);
+                    PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                    preparedStatement.setString(1, customerName);
+                    preparedStatement.setString(2, customerAddress);
+                    preparedStatement.setString(3, customerZip);
+                    preparedStatement.setString(4, customerPhone);
+                    preparedStatement.setString(5, currentTime);
+                    preparedStatement.setString(6, "updating user LOGIC NEEDED");
+                    preparedStatement.setInt(7, customerDivisionId);
+                    preparedStatement.setInt(8, customerId);
+                    // This logic needs updated to parse the country/division info for validation and then return int div_id value,
+                    // also don't forget to validate if the country and division.country id matches
+
+                    try {
+                        preparedStatement.execute();
+                        if (preparedStatement.getUpdateCount() > 0) {
+                            System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                            Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+                            Scene addPartScene = new Scene(add_product);
+                            Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                            addPartStage.setScene(addPartScene);
+                            addPartStage.show();
+                        } else {
+                            System.out.println("An error occurred and the customer wasn't updated.");
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                }
+
             } else {
-                System.out.println("An error occurred and the customer wasn't updated.");
+                errorAlert(6);
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+
+        } else {
+            errorAlert(5);
         }
 
     }
@@ -199,4 +220,74 @@ public class ModifyCustomerController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone) {
+
+        boolean validationResult = true;
+
+        if (customerName.length() == 0) {
+            errorAlert(1);
+            validationResult = false;
+        }
+
+        if (customerAddress.length() == 0) {
+            errorAlert(2);
+            validationResult = false;
+        }
+
+        if (customerPostal.length() == 0) {
+            errorAlert(3);
+            validationResult = false;
+        }
+
+        if (customerPhone.length() == 0) {
+            errorAlert(4);
+            validationResult = false;
+        }
+
+        return validationResult;
+
+    }
+
+    private void errorAlert(int errorCode) {
+        if(errorCode == 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Name Validation");
+            alert.setContentText("Please enter a name to create a new customer record.");
+            alert.showAndWait();
+        } else if(errorCode == 2) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Address Validation");
+            alert.setContentText("Please enter an address to create a new customer record.");
+            alert.showAndWait();
+        } else if(errorCode == 3) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Postal Code Validation");
+            alert.setContentText("Please enter a postal code to create a new customer record.");
+            alert.showAndWait();
+        } else if(errorCode == 4) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Phone Number Validation");
+            alert.setContentText("Please enter a phone number to create a new customer record.");
+            alert.showAndWait();
+        } else if(errorCode == 5) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Country Validation");
+            alert.setContentText("Please enter a country to create a new customer record.");
+            alert.showAndWait();
+        } else if(errorCode == 6) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Division Validation");
+            alert.setContentText("Please enter a first level division to create a new customer record.");
+            alert.showAndWait();
+        }
+
+    }
+
 }

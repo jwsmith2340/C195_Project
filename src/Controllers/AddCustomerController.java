@@ -76,9 +76,6 @@ public class AddCustomerController implements Initializable {
                 Integer customerCountryId = customer.getCustomerCountryId(customerCountry);
                 Integer customerDivisionId = customer.getCustomerDivisionId(customerDivision);
 
-                System.out.println(customerCountryId);
-                System.out.println(customerDivisionId);
-
                 if (customerFieldTypeValidation(customerName, customerAddress, customerPostal, customerPhone)) {
 
                     String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
@@ -116,15 +113,11 @@ public class AddCustomerController implements Initializable {
                 }
 
             } else {
-
                 errorAlert(6);
-
             }
 
         } else {
-
             errorAlert(5);
-
         }
 
     }
@@ -282,8 +275,7 @@ public class AddCustomerController implements Initializable {
             alert.setContentText("Please enter a first level division to create a new customer record.");
             alert.showAndWait();
         }
+
     }
-
-
 
 }
