@@ -72,7 +72,7 @@ public class AddCustomerController implements Initializable {
         System.out.println(customerCountryId);
         System.out.println(customerDivisionId);
 
-        if (customerFieldTypeValidation(customerName, customerAddress, customerPostal, customerPhone, customerCountry, customerDivision)) {
+        if (customerFieldTypeValidation(customerName, customerAddress, customerPostal, customerPhone, customerCountryId, customerDivisionId)) {
 
             String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
                     "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?)";
@@ -197,7 +197,7 @@ public class AddCustomerController implements Initializable {
 
     }
 
-    public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone, String customerCountry, String customerDivision) {
+    public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone, int customerCountry, int customerDivision) {
 
         boolean validationResult = true;
 
@@ -221,12 +221,16 @@ public class AddCustomerController implements Initializable {
             validationResult = false;
         }
 
-        if (customerCountry.length() == 0) {
+        try {
+            Integer countryValidation = customerCountry;
+        } catch (Exception e) {
             errorAlert(5);
             validationResult = false;
         }
 
-        if (customerDivision.length() == 0) {
+        try {
+            Integer divisionValidation = customerDivision;
+        } catch (Exception e) {
             errorAlert(6);
             validationResult = false;
         }
