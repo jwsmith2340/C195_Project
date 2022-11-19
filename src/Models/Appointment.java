@@ -35,7 +35,7 @@ public class Appointment {
     }
 
     public String getAppointmentTitle() {
-        return appointmentTitle;
+        return this.appointmentTitle;
     }
 
     public void setAppointmentTitle(String appointmentTitle) {

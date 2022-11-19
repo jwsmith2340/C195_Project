@@ -2,6 +2,7 @@ package Controllers;
 
 import Database.DBConnection;
 import Models.Appointment;
+import Models.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -114,11 +115,30 @@ public class AppointmentMainController implements Initializable {
     }
 
     public void appointmentModifyButton(ActionEvent actionEvent) throws IOException {
-        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/ModifyAppointment.fxml"));
-        Scene addPartScene = new Scene(add_product);
-        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        addPartStage.setScene(addPartScene);
-        addPartStage.show();
+        if(appointmentsTableView.getSelectionModel().getSelectedItem() != null) {
+            Appointment selectedAppointment = (Appointment) appointmentsTableView.getSelectionModel().getSelectedItem();
+            System.out.println(selectedAppointment);
+            Parent parent;
+            Stage stage;
+            stage = (Stage) appointmentModifyButton.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ModifyAppointment.fxml"));
+            parent = loader.load();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            ModifyAppointmentController controller = loader.getController();
+            controller.setAppointment(selectedAppointment);
+//            controller.getCustomerModify();
+        } else {
+//            errorAlert(2);
+            System.out.println("In customersModifyButton Else statement ALERT NEEDED");
+        }
+
+
+//        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/ModifyAppointment.fxml"));
+//        Scene addPartScene = new Scene(add_product);
+//        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+//        addPartStage.setScene(addPartScene);
+//        addPartStage.show();
     }
 
     public void appointmentBackButton(ActionEvent actionEvent) throws IOException {
