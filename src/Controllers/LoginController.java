@@ -81,9 +81,9 @@ public class LoginController implements Initializable {
 
             PreparedStatement sqlAppointmentPreparedStatement = DBConnection.startConnection().prepareStatement(appointmentSqlStatemtnt);
             ResultSet appointmentSqlResult = sqlAppointmentPreparedStatement.executeQuery();
-            sqlResult.next();
+            appointmentSqlResult.next();
 
-            if (sqlResult.getInt("total") == 1) {
+            if (appointmentSqlResult.getInt("total") == 1) {
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Appointment");
