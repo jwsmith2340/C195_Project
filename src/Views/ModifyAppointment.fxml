@@ -22,8 +22,8 @@
       <Label layoutX="49.0" layoutY="214.0" text="Location" />
       <Label layoutX="47.0" layoutY="268.0" text="Contact" />
       <Label layoutX="47.0" layoutY="318.0" text="Type" />
-      <Label layoutX="346.0" layoutY="121.0" text="Start Time" />
-      <Label layoutX="348.0" layoutY="168.0" text="End Time" />
+      <Label layoutX="346.0" layoutY="121.0" text="Start Time (EST)" />
+      <Label layoutX="348.0" layoutY="168.0" text="End Time (EST)" />
       <Label layoutX="346.0" layoutY="214.0" text="Customer" />
       <Label layoutX="346.0" layoutY="268.0" text="User" />
       <TextField fx:id="modifyAppointmentIdField" disable="true" layoutX="159.0" layoutY="74.0" />
