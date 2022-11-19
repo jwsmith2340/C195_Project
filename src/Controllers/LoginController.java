@@ -85,10 +85,11 @@ public class LoginController implements Initializable {
 
             if (appointmentSqlResult.getInt("apptTotal") == 1) {
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Appointment");
                 alert.setHeaderText("Appointment Reminder");
                 alert.setContentText("An appointment is scheduled in the next 15 minutes.");
+                alert.showAndWait();
 
             }
 
