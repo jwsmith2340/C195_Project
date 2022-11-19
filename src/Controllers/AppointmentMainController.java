@@ -22,6 +22,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AppointmentMainController implements Initializable {
@@ -131,8 +132,7 @@ public class AppointmentMainController implements Initializable {
             controller.setAppointment(selectedAppointment);
 //            controller.getCustomerModify();
         } else {
-//            errorAlert(2);
-            System.out.println("In customersModifyButton Else statement ALERT NEEDED");
+            errorAlert(2);
         }
 
     }
@@ -298,32 +298,57 @@ public class AppointmentMainController implements Initializable {
             Appointment selectedAppointment = (Appointment) appointmentsTableView.getSelectionModel().getSelectedItem();
             Integer appointmentId = selectedAppointment.getAppointmentId();
 
-            String sqlCascadeDeleteStatement = "DELETE FROM Appointments WHERE Appointment_ID = ?";
-            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlCascadeDeleteStatement);
-            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Appointments");
+            alert.setHeaderText("Cancel");
+            alert.setContentText("Do you want to cancel this appointment?");
 
-            preparedStatement.setInt(1, appointmentId);
-            // Deletes the customer's appointments first
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
 
-            try {
-                preparedStatement.execute();
-                if (preparedStatement.getUpdateCount() > 0) {
-                    System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                    Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
-                    Scene addPartScene = new Scene(add_product);
-                    Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                    addPartStage.setScene(addPartScene);
-                    addPartStage.show();
-                } else {
-                    System.out.println("An error occurred and the appointment wasn't deleted.");
+                String sqlCascadeDeleteStatement = "DELETE FROM Appointments WHERE Appointment_ID = ?";
+                DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlCascadeDeleteStatement);
+                PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                preparedStatement.setInt(1, appointmentId);
+                // Deletes the customer's appointments first
+
+                try {
+                    preparedStatement.execute();
+                    if (preparedStatement.getUpdateCount() > 0) {
+                        System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                        Scene addPartScene = new Scene(add_product);
+                        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                        addPartStage.setScene(addPartScene);
+                        addPartStage.show();
+                    } else {
+                        System.out.println("An error occurred and the appointment wasn't deleted.");
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+
             }
 
         } else {
-//            errorAlert(2);
-            System.out.println("In appointmentsDeleteButton Else statement ALERT NEEDED");
+            errorAlert(1);
+        }
+    }
+
+    private void errorAlert(int errorCode) {
+        if(errorCode == 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Cancel Appointment");
+            alert.setContentText("Please select an appointment to cancel.");
+            alert.showAndWait();
+        } else if(errorCode == 2) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Modify Appointment");
+            alert.setContentText("Please select an appointment to modify.");
+            alert.showAndWait();
         }
     }
 }
