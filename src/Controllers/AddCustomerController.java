@@ -65,6 +65,13 @@ public class AddCustomerController implements Initializable {
         String customerCountry = String.valueOf(addCustomerCountryCombo.getValue());
         String customerDivision = String.valueOf(addCustomerDivisionCombo.getValue());
 
+        Customer customer = new Customer();
+        int customerCountryId = customer.getCustomerCountryId(customerCountry);
+        int customerDivisionId = customer.getCustomerDivisionId(customerDivision);
+
+        System.out.println(customerCountryId);
+        System.out.println(customerDivisionId);
+
         if (customerFieldTypeValidation(customerName, customerAddress, customerPostal, customerPhone, customerCountry, customerDivision)) {
 
             String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
@@ -81,7 +88,7 @@ public class AddCustomerController implements Initializable {
             preparedStatement.setString(6, "user");
             preparedStatement.setString(7, currentTime);
             preparedStatement.setString(8, "user");
-            preparedStatement.setInt(9, 66);
+            preparedStatement.setInt(9, customerDivisionId);
 
             try {
                 preparedStatement.execute();
