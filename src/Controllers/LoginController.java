@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -75,6 +76,22 @@ public class LoginController implements Initializable {
         ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
         sqlResult.next();
         if (sqlResult.getInt("total") == 1) {
+
+            String appointmentSqlStatemtnt = "SELECT COUNT(*) FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
+
+            PreparedStatement sqlAppointmentPreparedStatement = DBConnection.startConnection().prepareStatement(appointmentSqlStatemtnt);
+            ResultSet appointmentSqlResult = sqlAppointmentPreparedStatement.executeQuery();
+            sqlResult.next();
+
+            if (sqlResult.getInt("total") == 1) {
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Appointment");
+                alert.setHeaderText("Appointment Reminder");
+                alert.setContentText("An appointment is scheduled in the next 15 minutes.");
+
+            }
+
             Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
             Scene addPartScene = new Scene(add_product);
             Stage addPartStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -118,10 +118,8 @@ public class CustomerMainController implements Initializable {
             stage.setScene(scene);
             ModifyCustomerController controller = loader.getController();
             controller.setCustomer(selectedCustomer);
-//            controller.getCustomerModify();
         } else {
-//            errorAlert(2);
-            System.out.println("In customersModifyButton Else statement ALERT NEEDED");
+            errorAlert(2);
         }
 
     }
@@ -171,8 +169,6 @@ public class CustomerMainController implements Initializable {
                 PreparedStatement secondPreparedStatement = DBPreparedStatement.getPreparedStatement();
 
                 secondPreparedStatement.setInt(1, customerId);
-                // This logic needs updated to parse the country/division info for validation and then return int div_id value,
-                // also don't forget to validate if the country and division.country id matches
 
                 try {
                     secondPreparedStatement.execute();
@@ -208,8 +204,8 @@ public class CustomerMainController implements Initializable {
         } else if(errorCode == 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Modify Part Error");
-            alert.setContentText("Please select a part to modify.");
+            alert.setHeaderText("Modify Customer");
+            alert.setContentText("Please select a customer to modify.");
             alert.showAndWait();
         }
     }
