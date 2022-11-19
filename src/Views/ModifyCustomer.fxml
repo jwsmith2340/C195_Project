@@ -18,7 +18,7 @@
       <Label layoutX="76.0" layoutY="166.0" text="Address" />
       <Label layoutX="76.0" layoutY="220.0" text="Postal Code" />
       <Label layoutX="76.0" layoutY="276.0" text="Telephone Number" />
-      <ComboBox fx:id="modifyCustomerCountryCombo" layoutX="223.0" layoutY="330.0" prefWidth="150.0" />
+      <ComboBox fx:id="modifyCustomerCountryCombo" layoutX="223.0" layoutY="330.0" onAction="#modifyCustomerCountryCombo" prefWidth="150.0" />
       <ComboBox fx:id="modifyCustomerDivisionCombo" layoutX="222.0" layoutY="386.0" prefWidth="150.0" />
       <Label layoutX="76.0" layoutY="334.0" text="Country" />
       <Label layoutX="76.0" layoutY="390.0" text="Division" />

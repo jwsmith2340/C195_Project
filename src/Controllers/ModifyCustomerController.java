@@ -3,9 +3,12 @@ package Controllers;
 import Database.DBConnection;
 import Database.DBPreparedStatement;
 import Models.Customer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,10 +18,13 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class ModifyCustomerController {
+public class ModifyCustomerController implements Initializable {
     @FXML
     public ComboBox<String> modifyCustomerCountryCombo;
     @FXML
@@ -36,7 +42,17 @@ public class ModifyCustomerController {
     @FXML
     public TextField modifyCustomerId;
 
+    @FXML
+    ObservableList<String> countryList = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<String> divisionList = FXCollections.observableArrayList();
+
     Customer modifyCustomer;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        setCountryComboBox();
+    }
 
     public void modifyCustomerSave(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
         System.out.println("Modify Customer Save Button");
@@ -110,8 +126,77 @@ public class ModifyCustomerController {
 
     }
 
-//    public void getCustomerModify(Inventory inv) {
-//        this.inventory = inv;
-//    }
+    private void setCountryComboBox() {
+        String sqlStatement = "SELECT country FROM countries;";
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            while (sqlResult.next()) {
+                String country = sqlResult.getString("Country");
+                countryList.add(country);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
+        modifyCustomerCountryCombo.getItems().clear();
+        modifyCustomerCountryCombo.getItems().addAll(countryList);
+    }
+
+    private void setDivisionComboBox(int Country_ID) {
+        divisionList.clear();
+        String sqlStatement = "SELECT division FROM first_level_divisions WHERE Country_ID = ?;";
+
+        try {
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlStatement);
+            PreparedStatement sqlPreparedStatement = DBPreparedStatement.getPreparedStatement();
+
+            sqlPreparedStatement.setInt(1, Country_ID);
+
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
+            while (sqlResult.next()) {
+
+                String division = sqlResult.getString("Division");
+                divisionList.add(division);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        modifyCustomerDivisionCombo.getItems().clear();
+        modifyCustomerDivisionCombo.getItems().addAll(divisionList);
+    }
+
+    public void modifyCustomerCountryCombo(ActionEvent actionEvent) {
+        String countryName = modifyCustomerCountryCombo.getSelectionModel().getSelectedItem();
+        System.out.println(countryName);
+        String sqlStatement = "SELECT Country_ID FROM Countries WHERE Country = ?;";
+
+        try {
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlStatement);
+            PreparedStatement sqlPreparedStatement = DBPreparedStatement.getPreparedStatement();
+
+            sqlPreparedStatement.setString(1, countryName);
+
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery();
+            try {
+                sqlResult.next();
+
+                int countryId = sqlResult.getInt("Country_ID");
+                modifyCustomerDivisionCombo.setDisable(false);
+                setDivisionComboBox(countryId);
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
