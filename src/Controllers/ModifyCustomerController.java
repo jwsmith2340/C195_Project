@@ -254,37 +254,37 @@ public class ModifyCustomerController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Name Validation");
-            alert.setContentText("Please enter a name to create a new customer record.");
+            alert.setContentText("Please enter a name to modify a customer record.");
             alert.showAndWait();
         } else if(errorCode == 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Address Validation");
-            alert.setContentText("Please enter an address to create a new customer record.");
+            alert.setContentText("Please enter an address to modify a customer record.");
             alert.showAndWait();
         } else if(errorCode == 3) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Postal Code Validation");
-            alert.setContentText("Please enter a postal code to create a new customer record.");
+            alert.setContentText("Please enter a postal code to modify a customer record.");
             alert.showAndWait();
         } else if(errorCode == 4) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Phone Number Validation");
-            alert.setContentText("Please enter a phone number to create a new customer record.");
+            alert.setContentText("Please enter a phone number to modify a customer record.");
             alert.showAndWait();
         } else if(errorCode == 5) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Country Validation");
-            alert.setContentText("Please enter a country to create a new customer record.");
+            alert.setContentText("Please enter a country to modify a customer record.");
             alert.showAndWait();
         } else if(errorCode == 6) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Division Validation");
-            alert.setContentText("Please enter a first level division to create a new customer record.");
+            alert.setContentText("Please enter a first level division to modify a customer record.");
             alert.showAndWait();
         }
 
