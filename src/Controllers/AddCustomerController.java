@@ -65,46 +65,65 @@ public class AddCustomerController implements Initializable {
         String customerCountry = String.valueOf(addCustomerCountryCombo.getValue());
         String customerDivision = String.valueOf(addCustomerDivisionCombo.getValue());
 
-        Customer customer = new Customer();
-        Integer customerCountryId = customer.getCustomerCountryId(customerCountry);
-        Integer customerDivisionId = customer.getCustomerDivisionId(customerDivision);
+        System.out.println(customerCountry);
+        System.out.println(customerDivision);
 
-        System.out.println(customerCountryId);
-        System.out.println(customerDivisionId);
+        if (customerCountry != "null") {
 
-        if (customerFieldTypeValidation(customerName, customerAddress, customerPostal, customerPhone, customerCountryId, customerDivisionId)) {
+            if (customerDivision != "null") {
 
-            String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
-                    "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?)";
+                Customer customer = new Customer();
+                Integer customerCountryId = customer.getCustomerCountryId(customerCountry);
+                Integer customerDivisionId = customer.getCustomerDivisionId(customerDivision);
 
-            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
-            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+                System.out.println(customerCountryId);
+                System.out.println(customerDivisionId);
 
-            preparedStatement.setString(1, customerName);
-            preparedStatement.setString(2, customerAddress);
-            preparedStatement.setString(3, customerPostal);
-            preparedStatement.setString(4, customerPhone);
-            preparedStatement.setString(5, currentTime);
-            preparedStatement.setString(6, "user");
-            preparedStatement.setString(7, currentTime);
-            preparedStatement.setString(8, "user");
-            preparedStatement.setInt(9, customerDivisionId);
+                if (customerFieldTypeValidation(customerName, customerAddress, customerPostal, customerPhone)) {
 
-            try {
-                preparedStatement.execute();
-                if (preparedStatement.getUpdateCount() > 0) {
-                    System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                    Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
-                    Scene addPartScene = new Scene(add_product);
-                    Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                    addPartStage.setScene(addPartScene);
-                    addPartStage.show();
-                } else {
-                    System.out.println("An error occurred and no customers were created.");
+                    String sqlInsertStatement = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By," +
+                            "Last_Update, Last_Updated_By, Division_ID) VALUES (?,?,?,?,?,?,?,?,?)";
+
+                    DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+                    PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                    preparedStatement.setString(1, customerName);
+                    preparedStatement.setString(2, customerAddress);
+                    preparedStatement.setString(3, customerPostal);
+                    preparedStatement.setString(4, customerPhone);
+                    preparedStatement.setString(5, currentTime);
+                    preparedStatement.setString(6, "user");
+                    preparedStatement.setString(7, currentTime);
+                    preparedStatement.setString(8, "user");
+                    preparedStatement.setInt(9, customerDivisionId);
+
+                    try {
+                        preparedStatement.execute();
+                        if (preparedStatement.getUpdateCount() > 0) {
+                            System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                            Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
+                            Scene addPartScene = new Scene(add_product);
+                            Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                            addPartStage.setScene(addPartScene);
+                            addPartStage.show();
+                        } else {
+                            System.out.println("An error occurred and no customers were created.");
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+
+            } else {
+
+                errorAlert(6);
+
             }
+
+        } else {
+
+            errorAlert(5);
 
         }
 
@@ -197,7 +216,7 @@ public class AddCustomerController implements Initializable {
 
     }
 
-    public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone, Integer customerCountry, Integer customerDivision) {
+    public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone) {
 
         boolean validationResult = true;
 
@@ -218,16 +237,6 @@ public class AddCustomerController implements Initializable {
 
         if (customerPhone.length() == 0) {
             errorAlert(4);
-            validationResult = false;
-        }
-
-        if (customerCountry == null) {
-            errorAlert(5);
-            validationResult = false;
-        }
-
-        if (customerDivision == null) {
-            errorAlert(6);
             validationResult = false;
         }
 
