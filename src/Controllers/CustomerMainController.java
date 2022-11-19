@@ -87,6 +87,7 @@ public class CustomerMainController implements Initializable {
                 customerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("customerCountry"));
                 customerDivisionColumn.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
 
+                DBConnection.closeConnection();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -162,6 +163,7 @@ public class CustomerMainController implements Initializable {
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
+                DBConnection.closeConnection();
 
                 String sqlDeleteStatement = "DELETE FROM Customers WHERE Customer_ID = ?";
 
@@ -186,12 +188,18 @@ public class CustomerMainController implements Initializable {
                     System.out.println(e.getMessage());
                 }
 
-            }
+                DBConnection.closeConnection();
 
+            }
 
         } else {
             errorAlert(1);
         }
+    }
+
+    public static void closeConnection() throws ClassNotFoundException, SQLException, Exception {
+        DBConnection.closeConnection();
+        System.out.println("Connection Closed");
     }
 
     private void errorAlert(int errorCode) {
