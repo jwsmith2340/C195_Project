@@ -165,40 +165,48 @@ public class AddAppointmentController implements Initializable {
         String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
         String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
 
-        String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
-                " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String startTimeInt = String.valueOf(appointmentStartTime.split(":"));
+        System.out.println(startTimeInt);
 
-        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
-        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+        // Change this, just here to prevent going into the block
+        if (startDateFormatted == "null") {
 
-        preparedStatement.setString(1, appointmentTitle);
-        preparedStatement.setString(2, appointmentDescription);
-        preparedStatement.setString(3, appointmentLocation);
-        preparedStatement.setString(4, appointmentType);
-        preparedStatement.setString(5, String.valueOf(startDateFormatted));
-        preparedStatement.setString(6, String.valueOf(endDateFormatted));
-        preparedStatement.setString(7, currentTime);
-        preparedStatement.setString(8, "Whoever made it");
-        preparedStatement.setString(9, currentTime);
-        preparedStatement.setString(10, "Whoever updated it");
-        preparedStatement.setInt(11, appointmentCustomerId);
-        preparedStatement.setInt(12, appointmentUserId);
-        preparedStatement.setInt(13, contactID);
+            String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
+                    " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-        try {
-            preparedStatement.execute();
-            if (preparedStatement.getUpdateCount() > 0) {
-                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
-                Scene addPartScene = new Scene(add_product);
-                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                addPartStage.setScene(addPartScene);
-                addPartStage.show();
-            } else {
-                System.out.println("An error occurred and no customers were created.");
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+            preparedStatement.setString(1, appointmentTitle);
+            preparedStatement.setString(2, appointmentDescription);
+            preparedStatement.setString(3, appointmentLocation);
+            preparedStatement.setString(4, appointmentType);
+            preparedStatement.setString(5, String.valueOf(startDateFormatted));
+            preparedStatement.setString(6, String.valueOf(endDateFormatted));
+            preparedStatement.setString(7, currentTime);
+            preparedStatement.setString(8, "Whoever made it");
+            preparedStatement.setString(9, currentTime);
+            preparedStatement.setString(10, "Whoever updated it");
+            preparedStatement.setInt(11, appointmentCustomerId);
+            preparedStatement.setInt(12, appointmentUserId);
+            preparedStatement.setInt(13, contactID);
+
+            try {
+                preparedStatement.execute();
+                if (preparedStatement.getUpdateCount() > 0) {
+                    System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                    Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                    Scene addPartScene = new Scene(add_product);
+                    Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    addPartStage.setScene(addPartScene);
+                    addPartStage.show();
+                } else {
+                    System.out.println("An error occurred and no customers were created.");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+
         }
 
     }
