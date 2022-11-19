@@ -77,13 +77,13 @@ public class LoginController implements Initializable {
         sqlResult.next();
         if (sqlResult.getInt("total") == 1) {
 
-            String appointmentSqlStatemtnt = "SELECT COUNT(*) FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
+            String appointmentSqlStatemtnt = "SELECT COUNT(*) apptTotal FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
 
             PreparedStatement sqlAppointmentPreparedStatement = DBConnection.startConnection().prepareStatement(appointmentSqlStatemtnt);
             ResultSet appointmentSqlResult = sqlAppointmentPreparedStatement.executeQuery();
             appointmentSqlResult.next();
 
-            if (appointmentSqlResult.getInt("total") == 1) {
+            if (appointmentSqlResult.getInt("apptTotal") == 1) {
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Appointment");
