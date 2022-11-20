@@ -148,93 +148,117 @@ public class AddAppointmentController implements Initializable {
 
         String currentTime = dateTimeFormatted.format(datetime);
 
-        String appointmentTitle = String.valueOf(addAppointmentTitleField.getText());
-        String appointmentDescription = String.valueOf(addAppointmentDescriptionField.getText());
-        String appointmentLocation = String.valueOf(addAppointmentLocationField.getText());
-        String appointmentContact = String.valueOf(addAppointmentContactCombo.getValue());
-        String appointmentType = String.valueOf(addAppointmentTypeField.getText());
-        String appointmentDate = String.valueOf(addAppointmentDatePicker.getValue());
-        String appointmentStartTime = String.valueOf(startTimeCombo.getValue());
-        String appointmentEndTime = String.valueOf(endTimeCombo.getValue());
-        Integer appointmentCustomerId = Integer.valueOf((String) addAppointmentCusIdSelector.getValue());
-        Integer appointmentUserId = Integer.valueOf((String) addAppointmentUserIdSelector.getValue());
+        if (addAppointmentCusIdSelector.getValue() != null) {
 
-        System.out.println(appointmentDate);
+            if (addAppointmentUserIdSelector.getValue() != null) {
 
-        if (appointmentContact != "null") {
+                String appointmentTitle = String.valueOf(addAppointmentTitleField.getText());
+                String appointmentDescription = String.valueOf(addAppointmentDescriptionField.getText());
+                String appointmentLocation = String.valueOf(addAppointmentLocationField.getText());
+                String appointmentContact = String.valueOf(addAppointmentContactCombo.getValue());
+                String appointmentType = String.valueOf(addAppointmentTypeField.getText());
+                String appointmentDate = String.valueOf(addAppointmentDatePicker.getValue());
+                String appointmentStartTime = String.valueOf(startTimeCombo.getValue());
+                String appointmentEndTime = String.valueOf(endTimeCombo.getValue());
+                Integer appointmentCustomerId = Integer.valueOf((String) addAppointmentCusIdSelector.getValue());
+                Integer appointmentUserId = Integer.valueOf((String) addAppointmentUserIdSelector.getValue());
+                System.out.println(appointmentCustomerId);
+                if (appointmentContact != "null") {
 
+                    if (appointmentDate != "null") {
 
+                        if (appointmentStartTime != "null") {
 
-            System.out.println(appointmentStartTime);
+                            if (appointmentEndTime != "null") {
 
-            Contact contactIDCall = new Contact();
-            int contactID = contactIDCall.getContactId(appointmentContact);
+                                Contact contactIDCall = new Contact();
+                                int contactID = contactIDCall.getContactId(appointmentContact);
 
-            String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
-            String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
+                                String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
+                                String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
 
-            String[] startTime = appointmentStartTime.split(":");
-            String startTimeFull = startTime[0] + startTime[1];
-            int startTimeInt = Integer.parseInt(startTimeFull);
+                                String[] startTime = appointmentStartTime.split(":");
+                                String startTimeFull = startTime[0] + startTime[1];
+                                int startTimeInt = Integer.parseInt(startTimeFull);
 
-            String[] endTime = appointmentEndTime.split(":");
-            String endTimeFull = endTime[0] + endTime[1];
-            int endTimeInt = Integer.parseInt(endTimeFull);
+                                String[] endTime = appointmentEndTime.split(":");
+                                String endTimeFull = endTime[0] + endTime[1];
+                                int endTimeInt = Integer.parseInt(endTimeFull);
 
-            if (endTimeInt > startTimeInt) {
+                                if (endTimeInt > startTimeInt) {
 
-                if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
-                    boolean go = false;
+                                    if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
+                                        boolean go = true;
 
-                    // Change this, just here to prevent going into the block
-                    if (go) {
+                                        // Change this, just here to prevent going into the block
+                                        if (go) {
 
-                        String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
-                                " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                                            String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
+                                                    " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
-                        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+                                            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+                                            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
 
-                        preparedStatement.setString(1, appointmentTitle);
-                        preparedStatement.setString(2, appointmentDescription);
-                        preparedStatement.setString(3, appointmentLocation);
-                        preparedStatement.setString(4, appointmentType);
-                        preparedStatement.setString(5, String.valueOf(startDateFormatted));
-                        preparedStatement.setString(6, String.valueOf(endDateFormatted));
-                        preparedStatement.setString(7, currentTime);
-                        preparedStatement.setString(8, "Whoever made it");
-                        preparedStatement.setString(9, currentTime);
-                        preparedStatement.setString(10, "Whoever updated it");
-                        preparedStatement.setInt(11, appointmentCustomerId);
-                        preparedStatement.setInt(12, appointmentUserId);
-                        preparedStatement.setInt(13, contactID);
+                                            preparedStatement.setString(1, appointmentTitle);
+                                            preparedStatement.setString(2, appointmentDescription);
+                                            preparedStatement.setString(3, appointmentLocation);
+                                            preparedStatement.setString(4, appointmentType);
+                                            preparedStatement.setString(5, String.valueOf(startDateFormatted));
+                                            preparedStatement.setString(6, String.valueOf(endDateFormatted));
+                                            preparedStatement.setString(7, currentTime);
+                                            preparedStatement.setString(8, "Whoever made it");
+                                            preparedStatement.setString(9, currentTime);
+                                            preparedStatement.setString(10, "Whoever updated it");
+                                            preparedStatement.setInt(11, appointmentCustomerId);
+                                            preparedStatement.setInt(12, appointmentUserId);
+                                            preparedStatement.setInt(13, contactID);
 
-                        try {
-                            preparedStatement.execute();
-                            if (preparedStatement.getUpdateCount() > 0) {
-                                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
-                                Scene addPartScene = new Scene(add_product);
-                                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                                addPartStage.setScene(addPartScene);
-                                addPartStage.show();
+                                            try {
+                                                preparedStatement.execute();
+                                                if (preparedStatement.getUpdateCount() > 0) {
+                                                    System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                                                    Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                                                    Scene addPartScene = new Scene(add_product);
+                                                    Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                                                    addPartStage.setScene(addPartScene);
+                                                    addPartStage.show();
+                                                } else {
+                                                    System.out.println("An error occurred and no customers were created.");
+                                                }
+                                            } catch (Exception e) {
+                                                System.out.println(e.getMessage());
+                                            }
+
+                                        }
+
+                                    }
+
+                                } else {
+                                    errorAlert(7);
+                                }
+
                             } else {
-                                System.out.println("An error occurred and no customers were created.");
+                                errorAlert(9);
                             }
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
+
+                        } else {
+                            errorAlert(8);
                         }
 
+                    } else {
+                        errorAlert(6);
                     }
 
+                } else {
+                    errorAlert(5);
                 }
 
             } else {
-                errorAlert(7);
+                errorAlert(11);
             }
 
         } else {
-            errorAlert(5);
+            errorAlert(10);
         }
 
     }
@@ -318,14 +342,38 @@ public class AddAppointmentController implements Initializable {
         } else if(errorCode == 6) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Division Validation");
-            alert.setContentText("Please enter a title to create a new appointment.");
+            alert.setHeaderText("Date Validation");
+            alert.setContentText("Please enter an appointment date to create a new appointment.");
             alert.showAndWait();
         } else if(errorCode == 7) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Time Error");
             alert.setContentText("The appointment end time has to be later than the start time.");
+            alert.showAndWait();
+        } else if(errorCode == 8) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Time Error");
+            alert.setContentText("Please enter a start time to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 9) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Time Error");
+            alert.setContentText("Please enter an end time to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 10) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Customer ID Error");
+            alert.setContentText("Please enter a customer ID to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 11) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("User ID Error");
+            alert.setContentText("Please enter a user ID to create a new appointment.");
             alert.showAndWait();
         }
 
