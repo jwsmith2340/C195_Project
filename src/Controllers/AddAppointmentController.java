@@ -35,8 +35,6 @@ public class AddAppointmentController implements Initializable {
     @FXML
     public TextField addAppointmentLocationField;
     @FXML
-    public TextField addAppointmentContactField;
-    @FXML
     public TextField addAppointmentTypeField;
     @FXML
     public ChoiceBox addAppointmentCusIdSelector;

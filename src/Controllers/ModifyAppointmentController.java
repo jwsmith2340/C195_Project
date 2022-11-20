@@ -49,7 +49,8 @@ public class ModifyAppointmentController implements Initializable {
     public ComboBox startTimeCombo;
     @FXML
     public ComboBox endTimeCombo;
-    @FXML public ComboBox modifyAppointmentContactCombo;
+    @FXML
+    public ComboBox modifyAppointmentContactCombo;
     @FXML
     public TextField modifyAppointmentIdField;
 
@@ -177,21 +178,53 @@ public class ModifyAppointmentController implements Initializable {
         int appointmentIdField = Integer.parseInt(modifyAppointmentIdField.getText());
         System.out.println(appointmentIdField);
 
-        if (modifyAppointmentCusIdSelector.getValue() == null) {
-
+        if (modifyAppointmentCusIdSelector.getValue() != null) {
+            System.out.println("in the first statement");
             if (modifyAppointmentUserIdSelector.getValue() != null) {
-
+                System.out.println("inside the second if statement");
                 String appointmentTitle = String.valueOf(modifyAppointmentTitleField.getText());
+                System.out.println("title");
                 String appointmentDescription = String.valueOf(modifyAppointmentDescriptionField.getText());
+                System.out.println("desc");
                 String appointmentLocation = String.valueOf(modifyAppointmentLocationField.getText());
+                System.out.println("loca");
                 String appointmentContact = String.valueOf(modifyAppointmentContactCombo.getValue());
+                System.out.println("conta");
                 String appointmentType = String.valueOf(modifyAppointmentTypeField.getText());
+                System.out.println("type");
                 String appointmentDate = String.valueOf(modifyAppointmentDatePicker.getValue());
+                System.out.println("date");
                 String appointmentStartTime = String.valueOf(startTimeCombo.getValue());
+                System.out.println("start");
                 String appointmentEndTime = String.valueOf(endTimeCombo.getValue());
-                Integer appointmentCustomerId = Integer.valueOf((String) modifyAppointmentCusIdSelector.getValue());
-                Integer appointmentUserId = Integer.valueOf((String) modifyAppointmentUserIdSelector.getValue());
-                System.out.println(appointmentCustomerId);
+                System.out.println("end");
+
+                boolean customerCatch = false;
+                boolean userCatch = false;
+                Integer appointmentCustomerId = null;
+                Integer appointmentUserId = null;
+
+                try {
+                    appointmentCustomerId = (Integer) modifyAppointmentCusIdSelector.getValue();
+                } catch (Exception e) {
+                    System.out.println(e);
+                    customerCatch = true;
+                }
+
+                try {
+                    appointmentUserId = (Integer) modifyAppointmentUserIdSelector.getValue();
+                } catch (Exception e) {
+                    System.out.println(e);
+                    userCatch = true;
+                }
+
+                if (customerCatch) {
+                    appointmentCustomerId = Integer.valueOf((String) modifyAppointmentCusIdSelector.getValue());
+                }
+
+                if (userCatch) {
+                    appointmentUserId = Integer.valueOf((String) modifyAppointmentUserIdSelector.getValue());
+                }
 
                 if (appointmentContact != "null") {
 
@@ -204,8 +237,8 @@ public class ModifyAppointmentController implements Initializable {
                                 Contact contactIDCall = new Contact();
                                 int contactID = contactIDCall.getContactId(appointmentContact);
 
-                                String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
-                                String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
+                                String startDateFormatted = appointmentDate + " " + appointmentStartTime;
+                                String endDateFormatted = appointmentDate + " " + appointmentEndTime;
 
                                 String[] startTime = appointmentStartTime.split(":");
                                 String startTimeFull = startTime[0] + startTime[1];
@@ -219,8 +252,10 @@ public class ModifyAppointmentController implements Initializable {
 
                                     if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
 
-                                        String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
-                                                " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                                        String sqlInsertStatement = "UPDATE Appointments SET Title = ?, Description = ?, " +
+                                                "Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?," +
+                                                " Created_By = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, " +
+                                                "User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?;";
 
                                         DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
                                         PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
@@ -340,37 +375,37 @@ public class ModifyAppointmentController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Title Validation");
-            alert.setContentText("Please enter a title to create a new appointment.");
+            alert.setContentText("Please enter a title to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Description Validation");
-            alert.setContentText("Please enter a description to create a new appointment.");
+            alert.setContentText("Please enter a description to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 3) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Location Validation");
-            alert.setContentText("Please enter a location to create a new appointment.");
+            alert.setContentText("Please enter a location to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 4) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Appointment type Validation");
-            alert.setContentText("Please enter an appointment type to create a new appointment.");
+            alert.setContentText("Please enter an appointment type to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 5) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Contact Validation");
-            alert.setContentText("Please enter a contact to create a new appointment.");
+            alert.setContentText("Please enter a contact to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 6) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Date Validation");
-            alert.setContentText("Please enter an appointment date to create a new appointment.");
+            alert.setContentText("Please enter an appointment date to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 7) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -382,25 +417,25 @@ public class ModifyAppointmentController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Time Error");
-            alert.setContentText("Please enter a start time to create a new appointment.");
+            alert.setContentText("Please enter a start time to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 9) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Time Error");
-            alert.setContentText("Please enter an end time to create a new appointment.");
+            alert.setContentText("Please enter an end time to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 10) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Customer ID Error");
-            alert.setContentText("Please enter a customer ID to create a new appointment.");
+            alert.setContentText("Please enter a customer ID to modify an appointment.");
             alert.showAndWait();
         } else if(errorCode == 11) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("User ID Error");
-            alert.setContentText("Please enter a user ID to create a new appointment.");
+            alert.setContentText("Please enter a user ID to modify an appointment.");
             alert.showAndWait();
         }
 
