@@ -252,6 +252,11 @@ public class ModifyAppointmentController implements Initializable {
 
                                     if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
 
+                                        // code for checking other appoinments PICK UP HERE, FINISH THE SQL STATEMENT, NEED TO
+                                        // CHECK FOR OTHER APPOINTMENTS WITH THE SAME CUSTOMER W/ A TIME OVERLAP
+
+                                        String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE Start <= "
+
                                         String sqlInsertStatement = "UPDATE Appointments SET Title = ?, Description = ?, " +
                                                 "Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?," +
                                                 " Created_By = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, " +
