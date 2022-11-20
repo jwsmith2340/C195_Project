@@ -188,8 +188,8 @@ public class AddAppointmentController implements Initializable {
                                     if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
 
                                         String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE " +
-                                                "((Start > ? AND Start < ?) " +
-                                                "OR (End > ? AND End < ?)) AND Customer_ID = ?;";
+                                                "((Start >= ? AND Start <= ?) " +
+                                                "OR (End >= ? AND End <= ?)) AND Customer_ID = ?;";
                                         System.out.println(sqlApptCheck);
                                         DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
                                         PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
@@ -395,6 +395,13 @@ public class AddAppointmentController implements Initializable {
             alert.setTitle("Error");
             alert.setHeaderText("User ID Error");
             alert.setContentText("Please enter a user ID to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 12) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Appointment Error");
+            alert.setContentText("This appointment interferes with another one of this customer's appoinments. Please " +
+                    "change the customer, or change the date/time of the appointment.");
             alert.showAndWait();
         }
 

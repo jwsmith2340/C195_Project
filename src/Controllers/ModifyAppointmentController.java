@@ -256,8 +256,8 @@ public class ModifyAppointmentController implements Initializable {
                                         // CHECK FOR OTHER APPOINTMENTS WITH THE SAME CUSTOMER W/ A TIME OVERLAP
 
                                         String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE " +
-                                                "((Start > ? AND Start < ?) " +
-                                                "OR (End > ? AND End < ?)) AND Customer_ID = ?;";
+                                                "((Start >= ? AND Start <= ?) " +
+                                                "OR (End >= ? AND End <= ?)) AND Customer_ID = ?;";
                                         System.out.println(sqlApptCheck);
                                         DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
                                         PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
