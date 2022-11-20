@@ -187,43 +187,70 @@ public class AddAppointmentController implements Initializable {
 
                                     if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
 
-                                        String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
-                                                " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                                        String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE " +
+                                                "((Start > ? AND Start < ?) " +
+                                                "OR (End > ? AND End < ?)) AND Customer_ID = ?;";
+                                        System.out.println(sqlApptCheck);
+                                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
+                                        PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
 
-                                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
-                                        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+                                        overlapPreparedStatement.setString(1, String.valueOf(startDateFormatted));
+                                        overlapPreparedStatement.setString(2, String.valueOf(endDateFormatted));
+                                        overlapPreparedStatement.setString(3, String.valueOf(startDateFormatted));
+                                        overlapPreparedStatement.setString(4, String.valueOf(endDateFormatted));
+                                        overlapPreparedStatement.setInt(5, appointmentCustomerId);
 
-                                        preparedStatement.setString(1, appointmentTitle);
-                                        preparedStatement.setString(2, appointmentDescription);
-                                        preparedStatement.setString(3, appointmentLocation);
-                                        preparedStatement.setString(4, appointmentType);
-                                        preparedStatement.setString(5, String.valueOf(startDateFormatted));
-                                        preparedStatement.setString(6, String.valueOf(endDateFormatted));
-                                        preparedStatement.setString(7, currentTime);
-                                        preparedStatement.setString(8, "Whoever made it");
-                                        preparedStatement.setString(9, currentTime);
-                                        preparedStatement.setString(10, "Whoever updated it");
-                                        preparedStatement.setInt(11, appointmentCustomerId);
-                                        preparedStatement.setInt(12, appointmentUserId);
-                                        preparedStatement.setInt(13, contactID);
-
+                                        System.out.println(sqlApptCheck);
                                         try {
-                                            preparedStatement.execute();
-                                            if (preparedStatement.getUpdateCount() > 0) {
-                                                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                                                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
-                                                Scene addPartScene = new Scene(add_product);
-                                                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                                                addPartStage.setScene(addPartScene);
-                                                addPartStage.show();
+                                            ResultSet sqlResult = overlapPreparedStatement.executeQuery();
+                                            sqlResult.next();
+                                            System.out.println(sqlResult.getInt("total"));
+                                            if (sqlResult.getInt("total") == 0) {
+                                                System.out.println("There are no overlapping appointments here mate");
+
+                                                String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
+                                                        " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+                                                DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+                                                PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                                                preparedStatement.setString(1, appointmentTitle);
+                                                preparedStatement.setString(2, appointmentDescription);
+                                                preparedStatement.setString(3, appointmentLocation);
+                                                preparedStatement.setString(4, appointmentType);
+                                                preparedStatement.setString(5, String.valueOf(startDateFormatted));
+                                                preparedStatement.setString(6, String.valueOf(endDateFormatted));
+                                                preparedStatement.setString(7, currentTime);
+                                                preparedStatement.setString(8, "Whoever made it");
+                                                preparedStatement.setString(9, currentTime);
+                                                preparedStatement.setString(10, "Whoever updated it");
+                                                preparedStatement.setInt(11, appointmentCustomerId);
+                                                preparedStatement.setInt(12, appointmentUserId);
+                                                preparedStatement.setInt(13, contactID);
+
+                                                try {
+                                                    preparedStatement.execute();
+                                                    if (preparedStatement.getUpdateCount() > 0) {
+                                                        System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                                                        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                                                        Scene addPartScene = new Scene(add_product);
+                                                        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                                                        addPartStage.setScene(addPartScene);
+                                                        addPartStage.show();
+                                                    } else {
+                                                        System.out.println("An error occurred and no customers were created.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.out.println(e.getMessage());
+                                                }
+
                                             } else {
-                                                System.out.println("An error occurred and no customers were created.");
+                                                errorAlert(12);
                                             }
+
                                         } catch (Exception e) {
                                             System.out.println(e.getMessage());
                                         }
-
-
 
                                     }
 
