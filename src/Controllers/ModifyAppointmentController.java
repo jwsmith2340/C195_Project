@@ -255,7 +255,28 @@ public class ModifyAppointmentController implements Initializable {
                                         // code for checking other appoinments PICK UP HERE, FINISH THE SQL STATEMENT, NEED TO
                                         // CHECK FOR OTHER APPOINTMENTS WITH THE SAME CUSTOMER W/ A TIME OVERLAP
 
-                                        String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE Start <= "
+                                        String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE (Start >= ?" +
+                                                "AND End <= ?) OR (Start >= ? AND End <= ?);";
+
+                                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
+                                        PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                                        overlapPreparedStatement.setString(1, String.valueOf(startDateFormatted));
+                                        overlapPreparedStatement.setString(2, String.valueOf(startDateFormatted));
+                                        overlapPreparedStatement.setString(3, String.valueOf(endDateFormatted));
+                                        overlapPreparedStatement.setString(4, String.valueOf(endDateFormatted));
+
+                                        try {
+                                            ResultSet sqlResult = overlapPreparedStatement.executeQuery();
+                                            sqlResult.next();
+
+                                            if (sqlResult.getInt("total") == 0) {
+                                                System.out.println("There are no overlapping appointments here mate");
+                                            }
+
+                                            } catch (Exception e) {
+                                            System.out.println(e.getMessage());
+                                        }
 
                                         String sqlInsertStatement = "UPDATE Appointments SET Title = ?, Description = ?, " +
                                                 "Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?," +
