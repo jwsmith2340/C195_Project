@@ -1,7 +1,9 @@
 package Controllers;
 
 import Database.DBConnection;
+import Database.DBPreparedStatement;
 import Models.Appointment;
+import Models.Contact;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -135,9 +137,6 @@ public class ModifyAppointmentController implements Initializable {
 
     }
 
-    public void addAppointmentSaveButton(ActionEvent actionEvent) throws IOException {
-    }
-
     public void setAppointment(Appointment selectedAppointment) {
 
         modifyAppointment = selectedAppointment;
@@ -168,7 +167,127 @@ public class ModifyAppointmentController implements Initializable {
     public void addAppointmentIdField(ActionEvent actionEvent) {
     }
 
-    public void modifyAppointmentSaveButton(ActionEvent actionEvent) {
+    public void modifyAppointmentSaveButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
+        System.out.println("save button clicked");
+        java.util.Date datetime = new java.util.Date();
+        java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String currentTime = dateTimeFormatted.format(datetime);
+
+        int appointmentIdField = Integer.parseInt(modifyAppointmentIdField.getText());
+        System.out.println(appointmentIdField);
+
+        if (modifyAppointmentCusIdSelector.getValue() == null) {
+
+            if (modifyAppointmentUserIdSelector.getValue() != null) {
+
+                String appointmentTitle = String.valueOf(modifyAppointmentTitleField.getText());
+                String appointmentDescription = String.valueOf(modifyAppointmentDescriptionField.getText());
+                String appointmentLocation = String.valueOf(modifyAppointmentLocationField.getText());
+                String appointmentContact = String.valueOf(modifyAppointmentContactCombo.getValue());
+                String appointmentType = String.valueOf(modifyAppointmentTypeField.getText());
+                String appointmentDate = String.valueOf(modifyAppointmentDatePicker.getValue());
+                String appointmentStartTime = String.valueOf(startTimeCombo.getValue());
+                String appointmentEndTime = String.valueOf(endTimeCombo.getValue());
+                Integer appointmentCustomerId = Integer.valueOf((String) modifyAppointmentCusIdSelector.getValue());
+                Integer appointmentUserId = Integer.valueOf((String) modifyAppointmentUserIdSelector.getValue());
+                System.out.println(appointmentCustomerId);
+
+                if (appointmentContact != "null") {
+
+                    if (appointmentDate != "null") {
+
+                        if (appointmentStartTime != "null") {
+
+                            if (appointmentEndTime != "null") {
+
+                                Contact contactIDCall = new Contact();
+                                int contactID = contactIDCall.getContactId(appointmentContact);
+
+                                String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
+                                String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
+
+                                String[] startTime = appointmentStartTime.split(":");
+                                String startTimeFull = startTime[0] + startTime[1];
+                                int startTimeInt = Integer.parseInt(startTimeFull);
+
+                                String[] endTime = appointmentEndTime.split(":");
+                                String endTimeFull = endTime[0] + endTime[1];
+                                int endTimeInt = Integer.parseInt(endTimeFull);
+
+                                if (endTimeInt > startTimeInt) {
+
+                                    if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
+
+                                        String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
+                                                " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+                                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+                                        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                                        preparedStatement.setString(1, appointmentTitle);
+                                        preparedStatement.setString(2, appointmentDescription);
+                                        preparedStatement.setString(3, appointmentLocation);
+                                        preparedStatement.setString(4, appointmentType);
+                                        preparedStatement.setString(5, String.valueOf(startDateFormatted));
+                                        preparedStatement.setString(6, String.valueOf(endDateFormatted));
+                                        preparedStatement.setString(7, currentTime);
+                                        preparedStatement.setString(8, "Whoever made it");
+                                        preparedStatement.setString(9, currentTime);
+                                        preparedStatement.setString(10, "Whoever updated it");
+                                        preparedStatement.setInt(11, appointmentCustomerId);
+                                        preparedStatement.setInt(12, appointmentUserId);
+                                        preparedStatement.setInt(13, contactID);
+
+                                        preparedStatement.setInt(14, appointmentIdField);
+
+                                        try {
+                                            preparedStatement.execute();
+                                            if (preparedStatement.getUpdateCount() > 0) {
+                                                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                                                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                                                Scene addPartScene = new Scene(add_product);
+                                                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                                                addPartStage.setScene(addPartScene);
+                                                addPartStage.show();
+                                            } else {
+                                                System.out.println("An error occurred and no customers were created.");
+                                            }
+                                        } catch (Exception e) {
+                                            System.out.println(e.getMessage());
+                                        }
+
+
+
+                                    }
+
+                                } else {
+                                    errorAlert(7);
+                                }
+
+                            } else {
+                                errorAlert(9);
+                            }
+
+                        } else {
+                            errorAlert(8);
+                        }
+
+                    } else {
+                        errorAlert(6);
+                    }
+
+                } else {
+                    errorAlert(5);
+                }
+
+            } else {
+                errorAlert(11);
+            }
+
+        } else {
+            errorAlert(10);
+        }
     }
 
     public void modifyAppointmentCancelButton(ActionEvent actionEvent) throws IOException {
@@ -186,6 +305,105 @@ public class ModifyAppointmentController implements Initializable {
     }
 
     public void endTimeCombo(ActionEvent actionEvent) {
+    }
+
+    public boolean appointmentFieldTypeValidation(String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType) {
+
+        boolean validationResult = true;
+
+        if (appointmentTitle.length() == 0) {
+            errorAlert(1);
+            validationResult = false;
+        }
+
+        if (appointmentDescription.length() == 0) {
+            errorAlert(2);
+            validationResult = false;
+        }
+
+        if (appointmentLocation.length() == 0) {
+            errorAlert(3);
+            validationResult = false;
+        }
+
+        if (appointmentType.length() == 0) {
+            errorAlert(4);
+            validationResult = false;
+        }
+
+        return validationResult;
+
+    }
+
+    private void errorAlert(int errorCode) {
+        if(errorCode == 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Title Validation");
+            alert.setContentText("Please enter a title to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 2) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Description Validation");
+            alert.setContentText("Please enter a description to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 3) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Location Validation");
+            alert.setContentText("Please enter a location to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 4) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Appointment type Validation");
+            alert.setContentText("Please enter an appointment type to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 5) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Contact Validation");
+            alert.setContentText("Please enter a contact to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 6) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Date Validation");
+            alert.setContentText("Please enter an appointment date to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 7) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Time Error");
+            alert.setContentText("The appointment end time has to be later than the start time.");
+            alert.showAndWait();
+        } else if(errorCode == 8) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Time Error");
+            alert.setContentText("Please enter a start time to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 9) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Time Error");
+            alert.setContentText("Please enter an end time to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 10) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Customer ID Error");
+            alert.setContentText("Please enter a customer ID to create a new appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 11) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("User ID Error");
+            alert.setContentText("Please enter a user ID to create a new appointment.");
+            alert.showAndWait();
+        }
+
     }
 
 }
