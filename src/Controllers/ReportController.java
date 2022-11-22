@@ -104,11 +104,11 @@ public class ReportController implements Initializable {
 
                 reportAppointmentId.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
                 reportAppointmentTitle.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
-                reportAppointmentType.setCellValueFactory(new PropertyValueFactory<>("appointmentDescription"));
-                reportAppointmentDescription.setCellValueFactory(new PropertyValueFactory<>("appointmentLocation"));
-                reportAppointmentStart.setCellValueFactory(new PropertyValueFactory<>("contactsName"));
-                reportAppointmentEnd.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
-                reportAppointmentCustomerId.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
+                reportAppointmentType.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
+                reportAppointmentDescription.setCellValueFactory(new PropertyValueFactory<>("appointmentDescription"));
+                reportAppointmentStart.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
+                reportAppointmentEnd.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
+                reportAppointmentCustomerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
 
             }
         } catch (SQLException e) {
