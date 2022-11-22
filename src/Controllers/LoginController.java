@@ -131,7 +131,7 @@ public class LoginController implements Initializable {
 
     private void logLoginSuccess(String username) throws IOException {
         try {
-            LocalTime currentTime = LocalTime.now();
+            LocalDateTime currentTime = LocalDateTime.now();
             String file = "login_activity";
             BufferedWriter bufferedFileWriter = new BufferedWriter(new FileWriter(file, true));
             bufferedFileWriter.append("User " + username + " logged into the system at " + currentTime.toString());
@@ -144,7 +144,7 @@ public class LoginController implements Initializable {
 
     private void logLoginFailure(String username) throws IOException {
         try {
-            LocalTime currentTime = LocalTime.now();
+            LocalDateTime currentTime = LocalDateTime.now();
             String file = "login_activity";
             BufferedWriter bufferedFileWriter = new BufferedWriter(new FileWriter(file, true));
             bufferedFileWriter.append("User " + username + " failed to log in to the system at " + currentTime.toString());
