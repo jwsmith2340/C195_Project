@@ -1,5 +1,9 @@
 package Controllers;
 
+import Database.DBConnection;
+import Models.Appointment;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,10 +14,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ReportController implements Initializable {
@@ -50,11 +58,13 @@ public class ReportController implements Initializable {
     @FXML
     public TableColumn reportCountryApptNumCol;
 
+    @FXML
+    ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("report initialized");
-
+        populateAppointmentTable();
     }
 
     public void reportBackButton(ActionEvent actionEvent) throws IOException {
@@ -63,6 +73,51 @@ public class ReportController implements Initializable {
         Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         addPartStage.setScene(addPartScene);
         addPartStage.show();
+    }
+
+    private void populateAppointmentTable() {
+        System.out.println("Appointment main page initialized");
+
+        String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
+                "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
+                "Appointments.Customer_ID, Appointments.User_ID FROM Appointments " +
+                "INNER JOIN Contacts ON Appointments.Contact_ID = Contacts.Contact_ID";
+
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            while (sqlResult.next()) {
+
+                int appointmentId = sqlResult.getInt("Appointment_ID");
+                String appointmentTitle = sqlResult.getString("Title");
+                String appointmentDescription = sqlResult.getString("Description");
+                String appointmentLocation = sqlResult.getString("Location");
+                String contactsName = sqlResult.getString("Contact_Name");
+                String appointmentType = sqlResult.getString("Type");
+                String appointmentStart = sqlResult.getString("Start");
+                String appointmentEnd = sqlResult.getString("End");
+                int customerId = sqlResult.getInt("Customer_ID");
+                int userId = sqlResult.getInt("User_ID");
+
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerId, userId);
+                appointmentList.addAll(appointment);
+
+                reportAppointmentId.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+                reportAppointmentTitle.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
+                reportAppointmentType.setCellValueFactory(new PropertyValueFactory<>("appointmentDescription"));
+                reportAppointmentDescription.setCellValueFactory(new PropertyValueFactory<>("appointmentLocation"));
+                reportAppointmentStart.setCellValueFactory(new PropertyValueFactory<>("contactsName"));
+                reportAppointmentEnd.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
+                reportAppointmentCustomerId.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        reportAppointmentTable.setItems(appointmentList);
     }
 
 }
