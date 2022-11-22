@@ -35,10 +35,12 @@ public class MainMenuController {
         addPartStage.show();
     }
 
-    public void mainReportsButton(ActionEvent actionEvent) {
-    }
-
-    public void mainLogsButton(ActionEvent actionEvent) {
+    public void mainReportsButton(ActionEvent actionEvent) throws IOException {
+        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/Reports.fxml"));
+        Scene addPartScene = new Scene(add_product);
+        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        addPartStage.setScene(addPartScene);
+        addPartStage.show();
     }
 
     public void mainExitButton(ActionEvent actionEvent) {
