@@ -15,6 +15,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -22,6 +24,7 @@ import java.sql.ResultSet;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Properties;
@@ -77,6 +80,7 @@ public class LoginController implements Initializable {
         sqlResult.next();
         if (sqlResult.getInt("total") == 1) {
 
+            logLoginSuccess(userName);
 
             // $$$$$$$$$$$$$$
             String appointmentSqlStatemtnt = "SELECT COUNT(*) apptTotal, Appointment_ID, Start FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
@@ -112,6 +116,8 @@ public class LoginController implements Initializable {
             addPartStage.setScene(addPartScene);
             addPartStage.show();
         } else {
+
+            logLoginFailure(userName);
             rb = ResourceBundle.getBundle("/Properties/" + locale);
             loginErrorLabel.setText(rb.getString("invalid"));
 
@@ -123,6 +129,30 @@ public class LoginController implements Initializable {
         Platform.exit();
     }
 
-//    public void loginPageLogin(ActionEvent actionEvent) {
-//    }
+    private void logLoginSuccess(String username) throws IOException {
+        try {
+            LocalTime currentTime = LocalTime.now();
+            String file = "login_activity";
+            BufferedWriter bufferedFileWriter = new BufferedWriter(new FileWriter(file, true));
+            bufferedFileWriter.append("User " + username + " logged into the system at " + currentTime.toString());
+            bufferedFileWriter.flush();
+            bufferedFileWriter.close();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    private void logLoginFailure(String username) throws IOException {
+        try {
+            LocalTime currentTime = LocalTime.now();
+            String file = "login_activity";
+            BufferedWriter bufferedFileWriter = new BufferedWriter(new FileWriter(file, true));
+            bufferedFileWriter.append("User " + username + " failed to log in to the system at " + currentTime.toString());
+            bufferedFileWriter.flush();
+            bufferedFileWriter.close();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
 }
