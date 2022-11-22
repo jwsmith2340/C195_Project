@@ -165,7 +165,7 @@ public class ReportController implements Initializable {
             throw new RuntimeException(e);
         }
 
-
+        reportCountryTable.setItems(countryList);
 
     }
 

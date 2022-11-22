@@ -17,7 +17,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/Views/LoginPage.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 304, 370);
-        stage.setTitle("Hello!");
+        stage.setTitle("Appointment Application");
         stage.setScene(scene);
         stage.show();
     }
