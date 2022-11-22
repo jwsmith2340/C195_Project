@@ -3,6 +3,7 @@ package Controllers;
 import Database.DBConnection;
 import Database.DBPreparedStatement;
 import Models.Appointment;
+import Models.Country;
 import Models.Month;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,7 +68,7 @@ public class ReportController implements Initializable {
     ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
     @FXML
-    ObservableList<Appointment> countryList = FXCollections.observableArrayList();
+    ObservableList<Country> countryList = FXCollections.observableArrayList();
 
     @FXML
     ObservableList<Month> monthList = FXCollections.observableArrayList();
@@ -82,7 +83,7 @@ public class ReportController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("report initialized");
         populateAppointmentTable();
-//        populateCountryTable();
+        populateCountryTable();
         populateMonthsTable();
     }
 
@@ -139,6 +140,31 @@ public class ReportController implements Initializable {
     }
 
     private void populateCountryTable() {
+        String sqlStatement = "SELECT COUNT(*) as total, Country FROM Appointments INNER JOIN Customers ON " +
+                "Appointments.Customer_ID = Customers.Customer_ID INNER JOIN first_level_divisions ON \n" +
+                "Customers.Division_ID = first_level_divisions.Division_ID INNER JOIN Countries ON " +
+                "first_level_divisions.Country_ID = Countries.Country_ID GROUP BY Countries.Country;";
+
+        try {
+            PreparedStatement sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatement);
+            ResultSet sqlResult = sqlPreparedStatement.executeQuery(sqlStatement);
+            while (sqlResult.next()) {
+                int apptTotal = sqlResult.getInt("total");
+                String country = sqlResult.getString("Country");
+
+                Country countryObj = new Country(apptTotal, country);
+                countryList.addAll(countryObj);
+
+                reportCountryApptNumCol.setCellValueFactory(new PropertyValueFactory<>("apptTotal"));
+                reportCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
 
 
     }
