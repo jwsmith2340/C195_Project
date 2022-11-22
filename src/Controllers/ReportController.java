@@ -22,6 +22,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ReportController implements Initializable {
@@ -61,10 +62,21 @@ public class ReportController implements Initializable {
     @FXML
     ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
+    @FXML
+    ObservableList<Appointment> countryList = FXCollections.observableArrayList();
+
+    String monthsArray[] = new String[] {
+            "January", "February", "March", "April", "May", "June", "July", "August", "September",
+            "October", "November", "December"};
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("report initialized");
         populateAppointmentTable();
+//        populateCountryTable();
+        populateMonthsTable();
     }
 
     public void reportBackButton(ActionEvent actionEvent) throws IOException {
@@ -76,7 +88,6 @@ public class ReportController implements Initializable {
     }
 
     private void populateAppointmentTable() {
-        System.out.println("Appointment main page initialized");
 
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
                 "Appointments.Location, Contacts.Contact_Name, Appointments.Type, Appointments.Start, Appointments.End, " +
@@ -118,6 +129,15 @@ public class ReportController implements Initializable {
         }
 
         reportAppointmentTable.setItems(appointmentList);
+    }
+
+    private void populateCountryTable() {
+
+
+    }
+
+    private void populateMonthsTable() {
+        Arrays.stream(monthsArray).forEach(month -> System.out.println(month));
     }
 
 }
