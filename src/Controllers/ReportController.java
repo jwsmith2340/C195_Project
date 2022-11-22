@@ -1,7 +1,9 @@
 package Controllers;
 
 import Database.DBConnection;
+import Database.DBPreparedStatement;
 import Models.Appointment;
+import Models.Month;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,7 +25,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReportController implements Initializable {
     @FXML
@@ -64,6 +68,9 @@ public class ReportController implements Initializable {
 
     @FXML
     ObservableList<Appointment> countryList = FXCollections.observableArrayList();
+
+    @FXML
+    ObservableList<Month> monthList = FXCollections.observableArrayList();
 
     String monthsArray[] = new String[] {
             "January", "February", "March", "April", "May", "June", "July", "August", "September",
@@ -137,7 +144,74 @@ public class ReportController implements Initializable {
     }
 
     private void populateMonthsTable() {
-        Arrays.stream(monthsArray).forEach(month -> System.out.println(month));
+
+        AtomicInteger monthCount = new AtomicInteger();
+
+        // First lambda expression
+        Arrays.stream(monthsArray).forEach(month -> {
+            monthCount.addAndGet(1);
+
+            int monthInt = monthCount.intValue();
+
+            String sqlStatementType = "SELECT Type FROM Appointments;";
+
+            PreparedStatement sqlPreparedStatement = null;
+            try {
+                sqlPreparedStatement = DBConnection.startConnection().prepareStatement(sqlStatementType);
+                ResultSet sqlResultType = sqlPreparedStatement.executeQuery(sqlStatementType);
+                while (sqlResultType.next()) {
+                    String appointmentType = sqlResultType.getString("Type");
+
+                    String sqlStatement = "SELECT COUNT(*) as total FROM Appointments WHERE MONTH(Start) = ? AND Type = ?;";
+                    try {
+                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlStatement);
+                        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                        preparedStatement.setInt(1, monthInt);
+                        preparedStatement.setString(2, appointmentType);
+
+                        ResultSet sqlResult = preparedStatement.executeQuery();
+
+                        while (sqlResult.next()) {
+                            int monthTotal = sqlResult.getInt("total");
+                            System.out.println("Month total value:");
+                            System.out.println(monthTotal);
+
+                            Month appointmentMonthData = new Month(monthTotal, month, appointmentType);
+
+                            monthList.addAll(appointmentMonthData);
+
+                            reportMonthMonthColumn.setCellValueFactory(new PropertyValueFactory<>("month"));
+                            reportMonthCountColumn.setCellValueFactory(new PropertyValueFactory<>("monthTotal"));
+                            reportMonthTypeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
+
+                        }
+
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+
+
+        });
+
+        reportMonthTable.setItems(monthList);
+
     }
 
 }
