@@ -69,8 +69,8 @@ public class ModifyAppointmentController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Appointment modify page initialized.");
 
-        LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(8);
-        LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(1).minusMinutes(45);
+        LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(0);
+        LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(0).minusMinutes(15);
 
         if (!startTimeBoxValues.equals(0) || !endTimeBoxValues.equals(0)) {
 
@@ -162,8 +162,10 @@ public class ModifyAppointmentController implements Initializable {
         modifyAppointmentContactCombo.getSelectionModel().select(selectedAppointment.getContactsName());
         modifyAppointmentTypeField.setText(selectedAppointment.getAppointmentType());
         modifyAppointmentDatePicker.setValue(LocalDate.parse(parsedDate));
+
         startTimeCombo.setValue(parsedStartTime);
         endTimeCombo.setValue(parsedEndTime);
+
         modifyAppointmentCusIdSelector.setValue(selectedAppointment.getCustomerId());
         modifyAppointmentUserIdSelector.setValue(selectedAppointment.getUserId());
 
