@@ -7,6 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The Customer class constructs instances of the Customer class and provides getter methods to return information
+ * on customer objects
+ */
 public class Customer {
 
     private int customerId;
@@ -19,6 +23,16 @@ public class Customer {
     private int customerCountryId;
     private int customerDivisionId;
 
+    /**
+     * The customer constructor builds customers using several data values
+     * @param customerId
+     * @param customerName
+     * @param customerAddress
+     * @param customerPostal
+     * @param customerPhone
+     * @param customerCountry
+     * @param customerDivision
+     */
     public Customer(int customerId, String customerName, String customerAddress, String customerPostal, String customerPhone, String customerCountry, String customerDivision) {
         this.customerId = customerId;
         this.customerName = customerName;
@@ -29,54 +43,67 @@ public class Customer {
         this.customerDivision = customerDivision;
     }
 
+    /**
+     * A blank customer constructor is used to create empty customer objects
+     */
     public Customer() {
 
     }
 
+    /**
+     * returns the customer phone number
+     * @return
+     */
     public String getCustomerPhone() {
         return customerPhone;
     }
 
-    public void setCustomerPhone(String customerPhone) {
-        this.customerPhone = customerPhone;
-    }
-
+    /**
+     * returns the customer id
+     * @return
+     */
     public int getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
+    /**
+     * returns the customer name
+     * @return
+     */
     public String getCustomerName() {
         return customerName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
+    /**
+     * returns the customer address
+     * @return
+     */
     public String getCustomerAddress() {
         return customerAddress;
     }
 
-    public void setCustomerAddress(String customerAddress) {
-        this.customerAddress = customerAddress;
-    }
-
+    /**
+     * returns the customer postal code
+     * @return
+     */
     public String getCustomerPostal() {
         return customerPostal;
     }
 
-    public void setCustomerPostal(String customerPostal) {
-        this.customerPostal = customerPostal;
-    }
-
+    /**
+     * returns the customer country
+     * @return
+     */
     public String getCustomerCountry() {
         return customerCountry;
     }
 
+    /**
+     * returns the customer country id. This runs a sql statement that takes a country name
+     * as input and returns the country id
+     * @param customerCountryName
+     * @return
+     */
     public int getCustomerCountryId(String customerCountryName) {
         String sqlStatement = "SELECT Country_ID FROM Countries WHERE Country = ?;";
 
@@ -105,14 +132,20 @@ public class Customer {
 
     }
 
-    public void setCustomerCountry(String customerCountry) {
-        this.customerCountry = customerCountry;
-    }
-
+    /**
+     * returns the customer division
+     * @return
+     */
     public String getCustomerDivision() {
         return customerDivision;
     }
 
+    /**
+     * returns the customer division id. This method takes in a string name of a division and
+     * returns the division id.
+     * @param customerDivisionName
+     * @return
+     */
     public int getCustomerDivisionId(String customerDivisionName) {
         String sqlStatement = "SELECT Division_ID FROM first_level_divisions WHERE Division = ?;";
 
@@ -141,7 +174,4 @@ public class Customer {
 
     }
 
-    public void setCustomerDivision(String customerDivision) {
-        this.customerDivision = customerDivision;
-    }
 }
