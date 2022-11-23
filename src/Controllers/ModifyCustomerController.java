@@ -3,6 +3,7 @@ package Controllers;
 import Database.DBConnection;
 import Database.DBPreparedStatement;
 import Models.Customer;
+import Models.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +26,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * modify customer controller handles the modify customer view for modifying customers
+ */
 public class ModifyCustomerController implements Initializable {
     @FXML
     public ComboBox<String> modifyCustomerCountryCombo;
@@ -50,11 +54,23 @@ public class ModifyCustomerController implements Initializable {
 
     Customer modifyCustomer;
 
+    /**
+     * initialize sets the country combo box so the values appear on load
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setCountryComboBox();
     }
 
+    /**
+     * The modify save first sets the current time in UTC time and then sets the text fields. Validation is then
+     * performed and the division id is set as an integer so it can be set in the SQL db properly.
+     * @param actionEvent
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void modifyCustomerSave(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
         System.out.println("Modify Customer Save Button");
         java.util.Date datetime = new java.util.Date();
@@ -91,11 +107,9 @@ public class ModifyCustomerController implements Initializable {
                     preparedStatement.setString(3, customerZip);
                     preparedStatement.setString(4, customerPhone);
                     preparedStatement.setString(5, currentTime);
-                    preparedStatement.setString(6, "updating user LOGIC NEEDED");
+                    preparedStatement.setString(6, User.userName);
                     preparedStatement.setInt(7, customerDivisionId);
                     preparedStatement.setInt(8, customerId);
-                    // This logic needs updated to parse the country/division info for validation and then return int div_id value,
-                    // also don't forget to validate if the country and division.country id matches
 
                     try {
                         preparedStatement.execute();
@@ -125,6 +139,11 @@ public class ModifyCustomerController implements Initializable {
 
     }
 
+    /**
+     * Redirects the user to the main customer view
+     * @param actionEvent
+     * @throws IOException
+     */
     public void modifyCustomerCancel(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -133,6 +152,10 @@ public class ModifyCustomerController implements Initializable {
         addPartStage.show();
     }
 
+    /**
+     * Sets the customer fields in the modify view
+     * @param customer
+     */
     void setCustomer(Customer customer) {
 
         modifyCustomer = customer;
@@ -147,6 +170,9 @@ public class ModifyCustomerController implements Initializable {
 
     }
 
+    /**
+     * Sets the country combo box with all available countries after running a SQL Select statment
+     */
     private void setCountryComboBox() {
         String sqlStatement = "SELECT country FROM countries;";
         try {
@@ -166,6 +192,11 @@ public class ModifyCustomerController implements Initializable {
         modifyCustomerCountryCombo.getItems().addAll(countryList);
     }
 
+    /**
+     * The division combo box is set when this method is called, which is each time a new country is selected in the
+     * country combo box.
+     * @param Country_ID
+     */
     private void setDivisionComboBox(int Country_ID) {
         divisionList.clear();
         String sqlStatement = "SELECT division FROM first_level_divisions WHERE Country_ID = ?;";
@@ -192,9 +223,13 @@ public class ModifyCustomerController implements Initializable {
         modifyCustomerDivisionCombo.getItems().addAll(divisionList);
     }
 
+    /**
+     * This method sets the country value when a country is selected in the combo box. It also calls the set Division
+     * Combo Box method to update the div combo box based on the currently selected country.
+     * @param actionEvent
+     */
     public void modifyCustomerCountryCombo(ActionEvent actionEvent) {
         String countryName = modifyCustomerCountryCombo.getSelectionModel().getSelectedItem();
-        System.out.println(countryName);
         String sqlStatement = "SELECT Country_ID FROM Countries WHERE Country = ?;";
 
         try {
@@ -221,6 +256,15 @@ public class ModifyCustomerController implements Initializable {
         }
     }
 
+    /**
+     * This validation method checks each text field value and displays an error alert if validation fails. It also returns
+     * a boolean value if the validation passes or fails.
+     * @param customerName
+     * @param customerAddress
+     * @param customerPostal
+     * @param customerPhone
+     * @return
+     */
     public boolean customerFieldTypeValidation(String customerName, String customerAddress, String customerPostal, String customerPhone) {
 
         boolean validationResult = true;
@@ -249,6 +293,10 @@ public class ModifyCustomerController implements Initializable {
 
     }
 
+    /**
+     * Sets all error alert messages so they can be called from other methods.
+     * @param errorCode
+     */
     private void errorAlert(int errorCode) {
         if(errorCode == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
