@@ -2,6 +2,7 @@ package Controllers;
 
 import Database.DBConnection;
 import Models.User;
+import Models.UserLocalTime;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,17 +49,13 @@ public class LoginController implements Initializable {
     public Label loginErrorLabel;
     private ZoneId localZoneId = ZoneId.systemDefault();
     private ResourceBundle rb;
-//    public String locale = String.valueOf(Locale.getDefault());
-    public String locale = "fr_FR"; // Here for manual testing
-
-
+    public String locale = String.valueOf(Locale.getDefault());
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Login Page is Initialized");
 
-        zoneIdLabel.setText(String.valueOf(localZoneId));
-        System.out.println(locale);
+        zoneIdLabel.setText(UserLocalTime.userTimeZone);
 
         rb = ResourceBundle.getBundle("/Properties/" + locale);
         headingLabel.setText(rb.getString("heading"));
@@ -70,7 +67,6 @@ public class LoginController implements Initializable {
     }
 
     public void loginPageLogin(ActionEvent event) throws IOException, SQLException, ClassNotFoundException {
-        // I don't think I need any input validation here
         String userName = String.valueOf(usernameField.getText());
         String userPassword = String.valueOf(passwordField.getText());
 
@@ -83,7 +79,6 @@ public class LoginController implements Initializable {
 
             logLoginSuccess(userName);
 
-            // $$$$$$$$$$$$$$
             String appointmentSqlStatemtnt = "SELECT COUNT(*) apptTotal, Appointment_ID, Start FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
 
             PreparedStatement sqlAppointmentPreparedStatement = DBConnection.startConnection().prepareStatement(appointmentSqlStatemtnt);
