@@ -1,8 +1,10 @@
 package Controllers;
 
+import Models.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,8 +12,10 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MainMenuController {
+public class MainMenuController implements Initializable {
     public Button mainCustomerButton;
     public Button mainAppointmentButton;
     public Button mainReportsButton;
@@ -45,5 +49,11 @@ public class MainMenuController {
 
     public void mainExitButton(ActionEvent actionEvent) {
         Platform.exit();
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("Main menu page.");
+        System.out.println(User.userName);
     }
 }

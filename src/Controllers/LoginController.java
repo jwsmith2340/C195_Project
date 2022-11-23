@@ -1,6 +1,7 @@
 package Controllers;
 
 import Database.DBConnection;
+import Models.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -109,6 +110,8 @@ public class LoginController implements Initializable {
                 alert.showAndWait();
 
             }
+
+            User.setUserName(userName);
 
             Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
             Scene addPartScene = new Scene(add_product);

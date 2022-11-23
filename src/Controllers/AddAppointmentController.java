@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -141,10 +142,15 @@ public class AddAppointmentController implements Initializable {
 
     public void addAppointmentSaveButton(ActionEvent actionEvent) throws IOException, ClassNotFoundException, SQLException {
         System.out.println("save button clicked");
-        java.util.Date datetime = new java.util.Date();
-        java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        java.util.Date datetime = new java.util.Date();
+//        java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//
+//        String currentTime = dateTimeFormatted.format(datetime);
 
-        String currentTime = dateTimeFormatted.format(datetime);
+        ZoneId utcZoneId = ZoneId.of("UTC");
+        LocalDateTime utcDateTime = LocalDateTime.now(utcZoneId);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss");
+        String utcFormattedDateTime = utcDateTime.format(dateTimeFormatter);
 
         if (addAppointmentCusIdSelector.getValue() != null) {
 
@@ -220,9 +226,9 @@ public class AddAppointmentController implements Initializable {
                                                 preparedStatement.setString(4, appointmentType);
                                                 preparedStatement.setString(5, String.valueOf(startDateFormatted));
                                                 preparedStatement.setString(6, String.valueOf(endDateFormatted));
-                                                preparedStatement.setString(7, currentTime);
+                                                preparedStatement.setString(7, utcFormattedDateTime);
                                                 preparedStatement.setString(8, "Whoever made it");
-                                                preparedStatement.setString(9, currentTime);
+                                                preparedStatement.setString(9, utcFormattedDateTime);
                                                 preparedStatement.setString(10, "Whoever updated it");
                                                 preparedStatement.setInt(11, appointmentCustomerId);
                                                 preparedStatement.setInt(12, appointmentUserId);

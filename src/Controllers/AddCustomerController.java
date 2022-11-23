@@ -61,30 +61,10 @@ public class AddCustomerController implements Initializable {
         java.util.Date datetime = new java.util.Date();
         java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-//        String currentTime = dateTimeFormatted.format(datetime);
-//        SimpleDateFormat currentTimeFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-//        currentTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
         ZoneId utcZoneId = ZoneId.of("UTC");
         LocalDateTime utcDateTime = LocalDateTime.now(utcZoneId);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss");
         String utcFormattedDateTime = utcDateTime.format(dateTimeFormatter);
-
-
-
-//
-//        SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-//        return dateFormatLocal.parse( dateFormatGmt.format(new Date()) );
-
-
-
-
-
-
-
-
-
-
 
         String customerName =String.valueOf(addCustomerNameField.getText());
         String customerAddress = String.valueOf(addCustomerAddressField.getText());
