@@ -156,6 +156,9 @@ public class AddCustomerController implements Initializable {
     /**
      * setCountryComboBox is run when the AddCustomer view is visited. A query is made to the db to get all countries,
      * and that data then populates the countryList, which is then used to populate the country combo box.
+     *
+     * LAMBDA #2 - A lambda function is used in set Country Combo Box to set all of the countries in the combo box. This
+     * makes the code more readable by other developers and therefore more maintainable.
      */
     private void setCountryComboBox() {
         String sqlStatement = "SELECT country FROM countries;";
@@ -173,11 +176,10 @@ public class AddCustomerController implements Initializable {
         }
 
         addCustomerCountryCombo.getItems().clear();
-//        addCustomerCountryCombo.getItems().addAll(countryList);
+        // Second lambda function
         countryList.forEach(country -> {
             addCustomerCountryCombo.getItems().add(country);
         });
-        // addCustomerCountryCombo.getItems().add()     GOOD CANDIDATE FOR 2ND LAMBDA
     }
 
     /**
