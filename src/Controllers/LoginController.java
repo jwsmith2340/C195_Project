@@ -1,6 +1,7 @@
 package Controllers;
 
 import Database.DBConnection;
+import Database.DBPreparedStatement;
 import Models.User;
 import Models.UserLocalTime;
 import javafx.application.Platform;
@@ -25,9 +26,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -79,21 +79,35 @@ public class LoginController implements Initializable {
 
             logLoginSuccess(userName);
 
-            String appointmentSqlStatemtnt = "SELECT COUNT(*) apptTotal, Appointment_ID, Start FROM Appointments WHERE Start <= now() + interval 15 minute AND Start >= now();";
+            String ldt = String.valueOf(LocalDateTime.now(ZoneId.of(UserLocalTime.userTimeZone)));
+            ldt = ldt.substring(0,19);
+            String[] localTime = ldt.split("T");
+            String formattedDateTimeFull = localTime[0] + " " + localTime[1];
+            String ldtUtc = localToUtcDateTimeFormatter(formattedDateTimeFull);
 
-            PreparedStatement sqlAppointmentPreparedStatement = DBConnection.startConnection().prepareStatement(appointmentSqlStatemtnt);
-            ResultSet appointmentSqlResult = sqlAppointmentPreparedStatement.executeQuery();
-            appointmentSqlResult.next();
+            String appointmentSqlStatemtnt = "SELECT COUNT(*) apptTotal, Appointment_ID, Start FROM Appointments WHERE Start <= ? + interval 15 minute AND Start >= ?;";
 
-            if (appointmentSqlResult.getInt("apptTotal") == 1) {
+            DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), appointmentSqlStatemtnt);
+            PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
 
-                int appointmentId = appointmentSqlResult.getInt("Appointment_ID");
-                String appointmentTime = appointmentSqlResult.getString("Start");
+            preparedStatement.setString(1, String.valueOf(ldtUtc));
+            preparedStatement.setString(2, String.valueOf(ldtUtc));
+
+            ResultSet sqlTotalResult = preparedStatement.executeQuery();
+
+            sqlTotalResult.next();
+
+            if (sqlTotalResult.getInt("apptTotal") == 1) {
+
+                int appointmentId = sqlTotalResult.getInt("Appointment_ID");
+                String appointmentTime = sqlTotalResult.getString("Start");
+
+                String appointmentTimeLocal = localDateTimeFormatter(appointmentTime);
 
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Appointment");
                 alert.setHeaderText("Appointment Reminder");
-                alert.setContentText("Appointment " + appointmentId + " is scheduled in the next 15 minutes at " + appointmentTime + ".");
+                alert.setContentText("Appointment " + appointmentId + " is scheduled in the next 15 minutes at " + appointmentTimeLocal + ".");
                 alert.showAndWait();
 
             } else {
@@ -151,6 +165,38 @@ public class LoginController implements Initializable {
         } catch (IOException e) {
             System.out.println(e);
         }
+    }
+
+    public String localToUtcDateTimeFormatter(String dateToBeFormatted) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTimeee = LocalDateTime.parse(dateToBeFormatted, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTimeee = localStartDateTimeee.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcSqlStartTimeee = systemStartZonedDateTimeee.withZoneSameInstant(ZoneId.of("UTC"));
+
+        String localTimeString = String.valueOf(utcSqlStartTimeee);
+        String localTimeSubString = localTimeString.substring(0,16);
+        String[] localTime = localTimeSubString.split("T");
+        String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
+
+        System.out.println(formattedDateTimeFull);
+        return formattedDateTimeFull;
+    }
+
+    public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTimeee = LocalDateTime.parse(dateToBeFormatted, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTimeee = localStartDateTimeee.atZone(ZoneId.of("UTC"));
+        ZonedDateTime utcSqlStartTimeee = systemStartZonedDateTimeee.withZoneSameInstant(ZoneId.systemDefault());
+
+        String localTimeString = String.valueOf(utcSqlStartTimeee);
+        String localTimeSubString = localTimeString.substring(0,16);
+        String[] localTime = localTimeSubString.split("T");
+        String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
+
+        System.out.println(formattedDateTimeFull);
+        return formattedDateTimeFull;
     }
 
 }
