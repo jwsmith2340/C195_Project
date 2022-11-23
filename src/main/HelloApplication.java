@@ -13,6 +13,12 @@ import java.text.ParseException;
 import java.util.TimeZone;
 
 public class HelloApplication extends Application {
+    /**
+     * start sets global variables for the user's local timezone as well as ET time zone. It then loads the user
+     * into the login page
+     * @param stage
+     * @throws IOException
+     */
     @Override
     public void start(Stage stage) throws IOException {
         TimeZone timezone = TimeZone.getDefault();
@@ -30,6 +36,11 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+    /**
+     * main is the gateway into the application and is the first thing that is ran in the program.
+     * @param args
+     * @throws SQLException
+     */
     public static void main(String[] args) throws SQLException {
         launch();
         DBConnection.closeConnection();
