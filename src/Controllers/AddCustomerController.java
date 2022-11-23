@@ -173,7 +173,10 @@ public class AddCustomerController implements Initializable {
         }
 
         addCustomerCountryCombo.getItems().clear();
-        addCustomerCountryCombo.getItems().addAll(countryList);
+//        addCustomerCountryCombo.getItems().addAll(countryList);
+        countryList.forEach(country -> {
+            addCustomerCountryCombo.getItems().add(country);
+        });
         // addCustomerCountryCombo.getItems().add()     GOOD CANDIDATE FOR 2ND LAMBDA
     }
 
