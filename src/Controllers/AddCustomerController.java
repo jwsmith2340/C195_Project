@@ -3,6 +3,7 @@ package Controllers;
 import Database.DBConnection;
 import Database.DBPreparedStatement;
 import Models.Customer;
+import Models.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -97,9 +98,9 @@ public class AddCustomerController implements Initializable {
                     preparedStatement.setString(3, customerPostal);
                     preparedStatement.setString(4, customerPhone);
                     preparedStatement.setString(5, utcFormattedDateTime);
-                    preparedStatement.setString(6, "user");
+                    preparedStatement.setString(6, User.userName);
                     preparedStatement.setString(7, utcFormattedDateTime);
-                    preparedStatement.setString(8, "user");
+                    preparedStatement.setString(8, User.userName);
                     preparedStatement.setInt(9, customerDivisionId);
 
                     try {
