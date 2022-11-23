@@ -190,10 +190,6 @@ public class AddAppointmentController implements Initializable {
                                 String endTimeFull = endTime[0] + endTime[1];
                                 int endTimeInt = Integer.parseInt(endTimeFull);
 
-
-
-
-
                                 if (endTimeInt > startTimeInt) {
 
                                     if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
@@ -229,8 +225,8 @@ public class AddAppointmentController implements Initializable {
                                                 preparedStatement.setString(2, appointmentDescription);
                                                 preparedStatement.setString(3, appointmentLocation);
                                                 preparedStatement.setString(4, appointmentType);
-                                                preparedStatement.setString(5, String.valueOf(startDateFormatted));
-                                                preparedStatement.setString(6, String.valueOf(endDateFormatted));
+                                                preparedStatement.setString(5, String.valueOf(startDateFormattedUtc));
+                                                preparedStatement.setString(6, String.valueOf(endDateFormattedUtc));
                                                 preparedStatement.setString(7, utcFormattedDateTime);
                                                 preparedStatement.setString(8, User.userName);
                                                 preparedStatement.setString(9, utcFormattedDateTime);
