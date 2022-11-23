@@ -74,7 +74,7 @@ public class Appointment {
         this.appointmentType = appointmentType;
     }
 
-    public String getAppointmentStart() {
+    public String getAppointmentStartLocalDT() {
         return appointmentStart;
     }
 
@@ -82,7 +82,7 @@ public class Appointment {
         this.appointmentStart = appointmentStart;
     }
 
-    public String getAppointmentEnd() {
+    public String getAppointmentEndLocalDT() {
         return appointmentEnd;
     }
 

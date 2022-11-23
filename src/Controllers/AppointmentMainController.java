@@ -22,6 +22,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -85,7 +89,10 @@ public class AppointmentMainController implements Initializable {
                 int customerId = sqlResult.getInt("Customer_ID");
                 int userId = sqlResult.getInt("User_ID");
 
-                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerId, userId);
+                String appointmentStartLocalDT = localDateTimeFormatter(appointmentStart);
+                String appointmentEndLocalDT = localDateTimeFormatter(appointmentEnd);
+
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStartLocalDT, appointmentEndLocalDT, customerId, userId);
                 appointmentList.addAll(appointment);
 
                 appointmentColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
@@ -94,8 +101,8 @@ public class AppointmentMainController implements Initializable {
                 locationColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentLocation"));
                 contactColumn.setCellValueFactory(new PropertyValueFactory<>("contactsName"));
                 typeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
-                startDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
-                endDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
+                startDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStartLocalDT"));
+                endDateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentEndLocalDT"));
                 customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
                 userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
@@ -351,5 +358,21 @@ public class AppointmentMainController implements Initializable {
             alert.setContentText("Please select an appointment to modify.");
             alert.showAndWait();
         }
+    }
+
+    public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTimeee = LocalDateTime.parse(dateToBeFormatted, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTimeee = localStartDateTimeee.atZone(ZoneId.of("UTC"));
+        ZonedDateTime utcSqlStartTimeee = systemStartZonedDateTimeee.withZoneSameInstant(ZoneId.systemDefault());
+
+        String localTimeString = String.valueOf(utcSqlStartTimeee);
+        String localTimeSubString = localTimeString.substring(0,16);
+        String[] localTime = localTimeSubString.split("T");
+        String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
+
+        System.out.println(formattedDateTimeFull);
+        return formattedDateTimeFull;
     }
 }

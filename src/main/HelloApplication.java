@@ -19,6 +19,10 @@ public class HelloApplication extends Application {
         String localeTime = timezone.getID();
         UserLocalTime.setUserName(localeTime);
 
+        TimeZone businessTimeZone = TimeZone.getTimeZone("America/New_York");
+        String businessTime = businessTimeZone.getID();
+        UserLocalTime.setBusinessTime(businessTime);
+
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/Views/LoginPage.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 304, 370);
         stage.setTitle("Appointment Application");

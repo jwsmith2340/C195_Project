@@ -25,6 +25,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -118,15 +122,18 @@ public class ReportController implements Initializable {
                 int customerId = sqlResult.getInt("Customer_ID");
                 int userId = sqlResult.getInt("User_ID");
 
-                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStart, appointmentEnd, customerId, userId);
+                String appointmentStartLocalDT = localDateTimeFormatter(appointmentStart);
+                String appointmentEndLocalDT = localDateTimeFormatter(appointmentEnd);
+
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, contactsName, appointmentType, appointmentStartLocalDT, appointmentEndLocalDT, customerId, userId);
                 appointmentList.addAll(appointment);
 
                 reportAppointmentId.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
                 reportAppointmentTitle.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
                 reportAppointmentType.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
                 reportAppointmentDescription.setCellValueFactory(new PropertyValueFactory<>("appointmentDescription"));
-                reportAppointmentStart.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
-                reportAppointmentEnd.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
+                reportAppointmentStart.setCellValueFactory(new PropertyValueFactory<>("appointmentStartLocalDT"));
+                reportAppointmentEnd.setCellValueFactory(new PropertyValueFactory<>("appointmentEndLocalDT"));
                 reportAppointmentCustomerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
 
             }
@@ -229,15 +236,26 @@ public class ReportController implements Initializable {
                 e.printStackTrace();
             }
 
-
-
-
-
-
         });
 
         reportMonthTable.setItems(monthList);
 
+    }
+
+    public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTimeee = LocalDateTime.parse(dateToBeFormatted, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTimeee = localStartDateTimeee.atZone(ZoneId.of("UTC"));
+        ZonedDateTime utcSqlStartTimeee = systemStartZonedDateTimeee.withZoneSameInstant(ZoneId.systemDefault());
+
+        String localTimeString = String.valueOf(utcSqlStartTimeee);
+        String localTimeSubString = localTimeString.substring(0,16);
+        String[] localTime = localTimeSubString.split("T");
+        String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
+
+        System.out.println(formattedDateTimeFull);
+        return formattedDateTimeFull;
     }
 
 }

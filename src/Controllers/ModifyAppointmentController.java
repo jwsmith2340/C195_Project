@@ -4,6 +4,8 @@ import Database.DBConnection;
 import Database.DBPreparedStatement;
 import Models.Appointment;
 import Models.Contact;
+import Models.User;
+import Models.UserLocalTime;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,6 +23,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -142,18 +145,20 @@ public class ModifyAppointmentController implements Initializable {
 
         modifyAppointment = selectedAppointment;
 
-        String rawDate = String.valueOf(selectedAppointment.getAppointmentStart());
-        String rawEnd = String.valueOf(selectedAppointment.getAppointmentEnd());
+        String rawDate = String.valueOf(selectedAppointment.getAppointmentStartLocalDT());
+        String rawEnd = String.valueOf(selectedAppointment.getAppointmentEndLocalDT());
 
         String formattedRawDate = localDateTimeFormatter(rawDate);
         String formattedRawEnd = localDateTimeFormatter(rawEnd);
 
-        String[] apptDate = formattedRawDate.split(" ");
+        String[] apptDate = rawDate.split(" ");
         String parsedDate = apptDate[0];
         String parsedStartTime = apptDate[1];
+        parsedStartTime = parsedStartTime.substring(0,5);
 
-        String[] endTime = formattedRawEnd.split(" ");
+        String[] endTime = rawEnd.split(" ");
         String parsedEndTime = endTime[1];
+        parsedEndTime = parsedEndTime.substring(0,5);
 
         modifyAppointmentIdField.setText(Integer.toString(selectedAppointment.getAppointmentId()));
         modifyAppointmentTitleField.setText(selectedAppointment.getAppointmentTitle());
@@ -190,6 +195,45 @@ public class ModifyAppointmentController implements Initializable {
         return formattedDateTimeFull;
     }
 
+    public String localToUtcDateTimeFormatter(String dateToBeFormatted) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTimeee = LocalDateTime.parse(dateToBeFormatted, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTimeee = localStartDateTimeee.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcSqlStartTimeee = systemStartZonedDateTimeee.withZoneSameInstant(ZoneId.of("UTC"));
+
+        String localTimeString = String.valueOf(utcSqlStartTimeee);
+        String localTimeSubString = localTimeString.substring(0,16);
+        String[] localTime = localTimeSubString.split("T");
+        String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
+
+        System.out.println(formattedDateTimeFull);
+        return formattedDateTimeFull;
+    }
+
+    public boolean businessHoursChecker(String dateToBeChecked) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTimeee = LocalDateTime.parse(dateToBeChecked, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTimeee = localStartDateTimeee.atZone(ZoneId.of(UserLocalTime.userTimeZone));
+        ZonedDateTime utcSqlStartTimeee = systemStartZonedDateTimeee.withZoneSameInstant(ZoneId.of(UserLocalTime.businessTimeZone));
+
+        String localTimeString = String.valueOf(utcSqlStartTimeee);
+        String localTimeSubString = localTimeString.substring(11,16);
+        String formattedDateTimeFull = localTimeSubString + ":00";
+
+        String[] timeToInt = formattedDateTimeFull.split(":");
+        String startTimeFull = timeToInt[0] + timeToInt[1];
+        int finalTimeInt = Integer.parseInt(startTimeFull);
+
+        if (finalTimeInt < 800 || finalTimeInt > 2200) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
     public void modifyAppointmentSaveButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
         System.out.println("save button clicked");
         java.util.Date datetime = new java.util.Date();
@@ -218,8 +262,10 @@ public class ModifyAppointmentController implements Initializable {
                 System.out.println("date");
                 String appointmentStartTime = String.valueOf(startTimeCombo.getValue());
                 System.out.println("start");
+                System.out.println(appointmentStartTime);
                 String appointmentEndTime = String.valueOf(endTimeCombo.getValue());
                 System.out.println("end");
+                System.out.println(appointmentEndTime);
 
                 boolean customerCatch = false;
                 boolean userCatch = false;
@@ -259,95 +305,115 @@ public class ModifyAppointmentController implements Initializable {
                                 Contact contactIDCall = new Contact();
                                 int contactID = contactIDCall.getContactId(appointmentContact);
 
-                                String startDateFormatted = appointmentDate + " " + appointmentStartTime;
-                                String endDateFormatted = appointmentDate + " " + appointmentEndTime;
+                                String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
+                                String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
 
-                                String[] startTime = appointmentStartTime.split(":");
-                                String startTimeFull = startTime[0] + startTime[1];
-                                int startTimeInt = Integer.parseInt(startTimeFull);
+                                boolean startTimeInRange = businessHoursChecker(startDateFormatted);
+                                boolean endTimeInRange = businessHoursChecker(endDateFormatted);
 
-                                String[] endTime = appointmentEndTime.split(":");
-                                String endTimeFull = endTime[0] + endTime[1];
-                                int endTimeInt = Integer.parseInt(endTimeFull);
+                                if (startTimeInRange) {
 
-                                if (endTimeInt > startTimeInt) {
+                                    if (endTimeInRange) {
 
-                                    if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
+                                        String[] startTime = appointmentStartTime.split(":");
+                                        String startTimeFull = startTime[0] + startTime[1];
+                                        int startTimeInt = Integer.parseInt(startTimeFull);
 
-                                        // code for checking other appoinments PICK UP HERE, FINISH THE SQL STATEMENT, NEED TO
-                                        // CHECK FOR OTHER APPOINTMENTS WITH THE SAME CUSTOMER W/ A TIME OVERLAP
+                                        String[] endTime = appointmentEndTime.split(":");
+                                        String endTimeFull = endTime[0] + endTime[1];
+                                        int endTimeInt = Integer.parseInt(endTimeFull);
 
-                                        String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE " +
-                                                "((Start >= ? AND Start <= ?) " +
-                                                "OR (End >= ? AND End <= ?)) AND Customer_ID = ?;";
-                                        System.out.println(sqlApptCheck);
-                                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
-                                        PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
+                                        if (endTimeInt > startTimeInt) {
 
-                                        overlapPreparedStatement.setString(1, String.valueOf(startDateFormatted));
-                                        overlapPreparedStatement.setString(2, String.valueOf(endDateFormatted));
-                                        overlapPreparedStatement.setString(3, String.valueOf(startDateFormatted));
-                                        overlapPreparedStatement.setString(4, String.valueOf(endDateFormatted));
-                                        overlapPreparedStatement.setInt(5, appointmentCustomerId);
+                                            if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
 
-                                        System.out.println(sqlApptCheck);
-                                        try {
-                                            ResultSet sqlResult = overlapPreparedStatement.executeQuery();
-                                            sqlResult.next();
-                                            System.out.println(sqlResult.getInt("total"));
-                                            if (sqlResult.getInt("total") == 0) {
-                                                System.out.println("There are no overlapping appointments here mate");
-                                                String sqlInsertStatement = "UPDATE Appointments SET Title = ?, Description = ?, " +
-                                                        "Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?," +
-                                                        " Created_By = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, " +
-                                                        "User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?;";
+                                                // code for checking other appoinments PICK UP HERE, FINISH THE SQL STATEMENT, NEED TO
+                                                // CHECK FOR OTHER APPOINTMENTS WITH THE SAME CUSTOMER W/ A TIME OVERLAP
 
-                                                DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
-                                                PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+                                                String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE " +
+                                                        "((Start >= ? AND Start <= ?) " +
+                                                        "OR (End >= ? AND End <= ?)) AND Customer_ID = ?;";
+                                                System.out.println(sqlApptCheck);
+                                                DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
+                                                PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
 
-                                                preparedStatement.setString(1, appointmentTitle);
-                                                preparedStatement.setString(2, appointmentDescription);
-                                                preparedStatement.setString(3, appointmentLocation);
-                                                preparedStatement.setString(4, appointmentType);
-                                                preparedStatement.setString(5, String.valueOf(startDateFormatted));
-                                                preparedStatement.setString(6, String.valueOf(endDateFormatted));
-                                                preparedStatement.setString(7, currentTime);
-                                                preparedStatement.setString(8, "Whoever made it");
-                                                preparedStatement.setString(9, currentTime);
-                                                preparedStatement.setString(10, "Whoever updated it");
-                                                preparedStatement.setInt(11, appointmentCustomerId);
-                                                preparedStatement.setInt(12, appointmentUserId);
-                                                preparedStatement.setInt(13, contactID);
+                                                String startDateFormattedUtc = localToUtcDateTimeFormatter(startDateFormatted);
+                                                String endDateFormattedUtc = localToUtcDateTimeFormatter(endDateFormatted);
 
-                                                preparedStatement.setInt(14, appointmentIdField);
+                                                System.out.println(startDateFormattedUtc);
+                                                System.out.println(endDateFormattedUtc);
 
+                                                overlapPreparedStatement.setString(1, String.valueOf(startDateFormattedUtc));
+                                                overlapPreparedStatement.setString(2, String.valueOf(endDateFormattedUtc));
+                                                overlapPreparedStatement.setString(3, String.valueOf(startDateFormattedUtc));
+                                                overlapPreparedStatement.setString(4, String.valueOf(endDateFormattedUtc));
+                                                overlapPreparedStatement.setInt(5, appointmentCustomerId);
+
+                                                System.out.println(sqlApptCheck);
                                                 try {
-                                                    preparedStatement.execute();
-                                                    if (preparedStatement.getUpdateCount() > 0) {
-                                                        System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
-                                                        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
-                                                        Scene addPartScene = new Scene(add_product);
-                                                        Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                                                        addPartStage.setScene(addPartScene);
-                                                        addPartStage.show();
+                                                    ResultSet sqlResult = overlapPreparedStatement.executeQuery();
+                                                    sqlResult.next();
+                                                    System.out.println(sqlResult.getInt("total"));
+                                                    if (sqlResult.getInt("total") == 0) {
+                                                        System.out.println("There are no overlapping appointments here mate");
+                                                        String sqlInsertStatement = "UPDATE Appointments SET Title = ?, Description = ?, " +
+                                                                "Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?," +
+                                                                " Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, " +
+                                                                "User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?;";
+
+                                                        DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlInsertStatement);
+                                                        PreparedStatement preparedStatement = DBPreparedStatement.getPreparedStatement();
+
+                                                        preparedStatement.setString(1, appointmentTitle);
+                                                        preparedStatement.setString(2, appointmentDescription);
+                                                        preparedStatement.setString(3, appointmentLocation);
+                                                        preparedStatement.setString(4, appointmentType);
+                                                        preparedStatement.setString(5, String.valueOf(startDateFormattedUtc));
+                                                        preparedStatement.setString(6, String.valueOf(endDateFormattedUtc));
+                                                        preparedStatement.setString(7, currentTime);
+                                                        preparedStatement.setString(8, currentTime);
+                                                        preparedStatement.setString(9, User.userName);
+                                                        preparedStatement.setInt(10, appointmentCustomerId);
+                                                        preparedStatement.setInt(11, appointmentUserId);
+                                                        preparedStatement.setInt(12, contactID);
+
+                                                        preparedStatement.setInt(13, appointmentIdField);
+
+                                                        try {
+                                                            preparedStatement.execute();
+                                                            if (preparedStatement.getUpdateCount() > 0) {
+                                                                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
+                                                                Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
+                                                                Scene addPartScene = new Scene(add_product);
+                                                                Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                                                                addPartStage.setScene(addPartScene);
+                                                                addPartStage.show();
+                                                            } else {
+                                                                System.out.println("An error occurred and no customers were created.");
+                                                            }
+                                                        } catch (Exception e) {
+                                                            System.out.println(e.getMessage());
+                                                        }
                                                     } else {
-                                                        System.out.println("An error occurred and no customers were created.");
+                                                        errorAlert(12);
                                                     }
+
                                                 } catch (Exception e) {
                                                     System.out.println(e.getMessage());
                                                 }
-                                            } else {
-                                               errorAlert(12);
+
                                             }
 
-                                            } catch (Exception e) {
-                                            System.out.println(e.getMessage());
+                                        } else {
+                                            errorAlert(7);
                                         }
 
+                                    } else {
+                                        errorAlert(14);
                                     }
 
                                 } else {
-                                    errorAlert(7);
+                                    errorAlert(13);
                                 }
 
                             } else {
@@ -493,6 +559,20 @@ public class ModifyAppointmentController implements Initializable {
             alert.setHeaderText("Appointment Error");
             alert.setContentText("This appointment interferes with another one of this customer's appoinments. Please " +
                     "change the customer, or change the date/time of the appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 13) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Scheduling Error");
+            alert.setContentText("The appointment time was set before 8:00am ET, please updated the start time of your" +
+                    " appointment.");
+            alert.showAndWait();
+        } else if(errorCode == 14) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Scheduling Error");
+            alert.setContentText("The appointment time was set after 10:00pm ET, please updated the start time of your" +
+                    " appointment.");
             alert.showAndWait();
         }
 
