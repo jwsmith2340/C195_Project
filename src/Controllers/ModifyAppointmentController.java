@@ -28,6 +28,9 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+/**
+ * modify appointment controller handles the modify appointment view for modifying appointments
+ */
 public class ModifyAppointmentController implements Initializable {
 
     @FXML
@@ -68,6 +71,12 @@ public class ModifyAppointmentController implements Initializable {
 
     Appointment modifyAppointment;
 
+    /**
+     * initialize populates the start time and end time combo boxes, the contact combo box, the customer id combo
+     * box, the user id combo box.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Appointment modify page initialized.");
@@ -141,15 +150,18 @@ public class ModifyAppointmentController implements Initializable {
 
     }
 
+    /**
+     * setAppointment first gets the dates and times from the selected appointment, it then parses that date time to
+     * extract the time in string format, and it sets the start and end time combo boxes with those values. Additionally,
+     * it sets the text fields according to the selected appointment values.
+     * @param selectedAppointment
+     */
     public void setAppointment(Appointment selectedAppointment) {
 
         modifyAppointment = selectedAppointment;
 
         String rawDate = String.valueOf(selectedAppointment.getAppointmentStartLocalDT());
         String rawEnd = String.valueOf(selectedAppointment.getAppointmentEndLocalDT());
-
-        String formattedRawDate = localDateTimeFormatter(rawDate);
-        String formattedRawEnd = localDateTimeFormatter(rawEnd);
 
         String[] apptDate = rawDate.split(" ");
         String parsedDate = apptDate[0];
@@ -176,9 +188,11 @@ public class ModifyAppointmentController implements Initializable {
 
     }
 
-    public void addAppointmentIdField(ActionEvent actionEvent) {
-    }
-
+    /**
+     * This method takes in a date in UTC time and returns it in the user's local time
+     * @param dateToBeFormatted
+     * @return
+     */
     public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -195,6 +209,14 @@ public class ModifyAppointmentController implements Initializable {
         return formattedDateTimeFull;
     }
 
+    /**
+     * This date formatter takes in a string value of a current date, the local date/time input by the user. A
+     * LocalDateTime object is then created with the UTC_STANDARD_FORMAT that I set and the user's input. This input
+     * is then zoned according to the user's system ZoneId. The user's system time is then converted to UTC time, and
+     * the value is transformed to a string, formatted, and returned to the save method.
+     * @param dateToBeFormatted
+     * @return
+     */
     public String localToUtcDateTimeFormatter(String dateToBeFormatted) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -211,6 +233,14 @@ public class ModifyAppointmentController implements Initializable {
         return formattedDateTimeFull;
     }
 
+    /**
+     * This date formatter takes in a string value of a current date, the local date/time input by the user. A
+     * LocalDateTime object is then created with the UTC_STANDARD_FORMAT that I set and the user's input. This input
+     * is then zoned according to the user's system ZoneId. The user's system time is then converted to eastern time, and
+     * the value is transformed to a string, formatted, and returned to the save method.
+     * @param dateToBeChecked
+     * @return
+     */
     public boolean businessHoursChecker(String dateToBeChecked) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -234,6 +264,17 @@ public class ModifyAppointmentController implements Initializable {
 
     }
 
+    /**
+     * The save button first gets the current time and appointment id. If there is a customer and user id, the text
+     * fields are populated with the values of the selected appointment. Validation is then performed on each field
+     * and the date time is formatted to upload from local time to UTC date time. That UTC date time is then used
+     * to search the appointments table for conflicting appointment times. If there are no conflicting appointments
+     * and all other validations have cleared, an UPDATE SQL statement is run to update the modified appointment.
+     * Error codes exist at every level in the event that validations fail.
+     * @param actionEvent
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void modifyAppointmentSaveButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
         System.out.println("save button clicked");
         java.util.Date datetime = new java.util.Date();
@@ -242,30 +283,17 @@ public class ModifyAppointmentController implements Initializable {
         String currentTime = dateTimeFormatted.format(datetime);
 
         int appointmentIdField = Integer.parseInt(modifyAppointmentIdField.getText());
-        System.out.println(appointmentIdField);
 
         if (modifyAppointmentCusIdSelector.getValue() != null) {
-            System.out.println("in the first statement");
             if (modifyAppointmentUserIdSelector.getValue() != null) {
-                System.out.println("inside the second if statement");
                 String appointmentTitle = String.valueOf(modifyAppointmentTitleField.getText());
-                System.out.println("title");
                 String appointmentDescription = String.valueOf(modifyAppointmentDescriptionField.getText());
-                System.out.println("desc");
                 String appointmentLocation = String.valueOf(modifyAppointmentLocationField.getText());
-                System.out.println("loca");
                 String appointmentContact = String.valueOf(modifyAppointmentContactCombo.getValue());
-                System.out.println("conta");
                 String appointmentType = String.valueOf(modifyAppointmentTypeField.getText());
-                System.out.println("type");
                 String appointmentDate = String.valueOf(modifyAppointmentDatePicker.getValue());
-                System.out.println("date");
                 String appointmentStartTime = String.valueOf(startTimeCombo.getValue());
-                System.out.println("start");
-                System.out.println(appointmentStartTime);
                 String appointmentEndTime = String.valueOf(endTimeCombo.getValue());
-                System.out.println("end");
-                System.out.println(appointmentEndTime);
 
                 boolean customerCatch = false;
                 boolean userCatch = false;
@@ -327,21 +355,15 @@ public class ModifyAppointmentController implements Initializable {
 
                                             if (appointmentFieldTypeValidation(appointmentTitle, appointmentDescription, appointmentLocation, appointmentType)) {
 
-                                                // code for checking other appoinments PICK UP HERE, FINISH THE SQL STATEMENT, NEED TO
-                                                // CHECK FOR OTHER APPOINTMENTS WITH THE SAME CUSTOMER W/ A TIME OVERLAP
-
                                                 String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE " +
                                                         "((Start >= ? AND Start <= ?) " +
                                                         "OR (End >= ? AND End <= ?)) AND Customer_ID = ?;";
-                                                System.out.println(sqlApptCheck);
+
                                                 DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
                                                 PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
 
                                                 String startDateFormattedUtc = localToUtcDateTimeFormatter(startDateFormatted);
                                                 String endDateFormattedUtc = localToUtcDateTimeFormatter(endDateFormatted);
-
-                                                System.out.println(startDateFormattedUtc);
-                                                System.out.println(endDateFormattedUtc);
 
                                                 overlapPreparedStatement.setString(1, String.valueOf(startDateFormattedUtc));
                                                 overlapPreparedStatement.setString(2, String.valueOf(endDateFormattedUtc));
@@ -349,13 +371,11 @@ public class ModifyAppointmentController implements Initializable {
                                                 overlapPreparedStatement.setString(4, String.valueOf(endDateFormattedUtc));
                                                 overlapPreparedStatement.setInt(5, appointmentCustomerId);
 
-                                                System.out.println(sqlApptCheck);
                                                 try {
                                                     ResultSet sqlResult = overlapPreparedStatement.executeQuery();
                                                     sqlResult.next();
-                                                    System.out.println(sqlResult.getInt("total"));
+
                                                     if (sqlResult.getInt("total") == 0) {
-                                                        System.out.println("There are no overlapping appointments here mate");
                                                         String sqlInsertStatement = "UPDATE Appointments SET Title = ?, Description = ?, " +
                                                                 "Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?," +
                                                                 " Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, " +
@@ -382,7 +402,6 @@ public class ModifyAppointmentController implements Initializable {
                                                         try {
                                                             preparedStatement.execute();
                                                             if (preparedStatement.getUpdateCount() > 0) {
-                                                                System.out.println("Number of rows affected: " + preparedStatement.getUpdateCount());
                                                                 Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
                                                                 Scene addPartScene = new Scene(add_product);
                                                                 Stage addPartStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -441,6 +460,11 @@ public class ModifyAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * The cancel button redirects the user to the main appointment view
+     * @param actionEvent
+     * @throws IOException
+     */
     public void modifyAppointmentCancelButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -449,15 +473,15 @@ public class ModifyAppointmentController implements Initializable {
         addPartStage.show();
     }
 
-    public void modifyAppointmentDatePicker(ActionEvent actionEvent) {
-    }
-
-    public void startTimeCombo(ActionEvent actionEvent) {
-    }
-
-    public void endTimeCombo(ActionEvent actionEvent) {
-    }
-
+    /**
+     * The validation method provides error codes and a boolean validation result to cause the save button method
+     * to stop in the case validation fails.
+     * @param appointmentTitle
+     * @param appointmentDescription
+     * @param appointmentLocation
+     * @param appointmentType
+     * @return
+     */
     public boolean appointmentFieldTypeValidation(String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType) {
 
         boolean validationResult = true;
@@ -486,6 +510,10 @@ public class ModifyAppointmentController implements Initializable {
 
     }
 
+    /**
+     * Error codes are created in this method that are then used in the rest of this class.
+     * @param errorCode
+     */
     private void errorAlert(int errorCode) {
         if(errorCode == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
