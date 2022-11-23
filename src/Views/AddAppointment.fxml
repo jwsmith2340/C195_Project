@@ -35,10 +35,10 @@
       <ChoiceBox fx:id="addAppointmentUserIdSelector" layoutX="458.0" layoutY="264.0" prefWidth="150.0" />
       <Button fx:id="addAppointmentSaveButton" layoutX="458.0" layoutY="373.0" mnemonicParsing="false" onAction="#addAppointmentSaveButton" text="Save" />
       <Button fx:id="addAppointmentCancelButton" layoutX="557.0" layoutY="373.0" mnemonicParsing="false" onAction="#addAppointmentCancelButton" text="Cancel" />
-      <DatePicker fx:id="addAppointmentDatePicker" layoutX="459.0" layoutY="74.0" onAction="#addAppointmentDatePicker" />
+      <DatePicker fx:id="addAppointmentDatePicker" layoutX="459.0" layoutY="74.0" />
       <Label layoutX="346.0" layoutY="78.0" text="Date" />
-      <ComboBox fx:id="startTimeCombo" layoutX="458.0" layoutY="117.0" onAction="#startTimeCombo" prefWidth="150.0" />
-      <ComboBox fx:id="endTimeCombo" layoutX="458.0" layoutY="164.0" onAction="#endTimeCombo" prefWidth="150.0" />
+      <ComboBox fx:id="startTimeCombo" layoutX="458.0" layoutY="117.0" prefWidth="150.0" />
+      <ComboBox fx:id="endTimeCombo" layoutX="458.0" layoutY="164.0" prefWidth="150.0" />
       <ComboBox fx:id="addAppointmentContactCombo" layoutX="162.0" layoutY="264.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

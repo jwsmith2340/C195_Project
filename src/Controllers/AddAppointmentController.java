@@ -21,11 +21,13 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+/**
+ * AddAppointmentController is the controller responsible for the add appointment page.
+ */
 public class AddAppointmentController implements Initializable {
     @FXML
     public TextField addAppointmentTitleField;
@@ -65,6 +67,12 @@ public class AddAppointmentController implements Initializable {
     @FXML
     ObservableList<String> userIDs = FXCollections.observableArrayList();
 
+    /**
+     * Initialize in this class sets the time combo box values, the contact combo box, the customer id combo box, and
+     * the user id combo box so it is available when the add appointment page is rendered.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Appointment add page initialized.");
@@ -138,12 +146,19 @@ public class AddAppointmentController implements Initializable {
 
     }
 
+    /**
+     * addAppointmentSaveButton first formats the local time to UTC for updating the SQL database in UTC. Values are
+     * then grabbed from text fields and combo boxes, and null values are checked for. Time is then formatted further
+     * and is transformed into int data types to check for greater or less than errors. Validations are performed on
+     * all fields, and then conflicting appointments are checked for based on UTC time in the DB as well as the customer
+     * id value. Once all validations pass, an insert statement is created with the values grabbed from the user input.
+     * @param actionEvent
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void addAppointmentSaveButton(ActionEvent actionEvent) throws IOException, ClassNotFoundException, SQLException {
         System.out.println("save button clicked");
-//        java.util.Date datetime = new java.util.Date();
-//        java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//
-//        String currentTime = dateTimeFormatted.format(datetime);
 
         ZoneId utcZoneId = ZoneId.of("UTC");
         LocalDateTime utcDateTime = LocalDateTime.now(utcZoneId);
@@ -197,7 +212,7 @@ public class AddAppointmentController implements Initializable {
                                         String sqlApptCheck = "SELECT COUNT(*) AS total FROM Appointments WHERE " +
                                                 "((Start >= ? AND Start <= ?) " +
                                                 "OR (End >= ? AND End <= ?)) AND Customer_ID = ?;";
-                                        System.out.println(sqlApptCheck);
+
                                         DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
                                         PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
 
@@ -207,13 +222,11 @@ public class AddAppointmentController implements Initializable {
                                         overlapPreparedStatement.setString(4, String.valueOf(endDateFormattedUtc));
                                         overlapPreparedStatement.setInt(5, appointmentCustomerId);
 
-                                        System.out.println(sqlApptCheck);
                                         try {
                                             ResultSet sqlResult = overlapPreparedStatement.executeQuery();
                                             sqlResult.next();
-                                            System.out.println(sqlResult.getInt("total"));
+
                                             if (sqlResult.getInt("total") == 0) {
-                                                System.out.println("There are no overlapping appointments here mate");
 
                                                 String sqlInsertStatement = "INSERT INTO Appointments (Title, Description, Location, Type, Start, End, Create_Date," +
                                                         " Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -291,6 +304,11 @@ public class AddAppointmentController implements Initializable {
 
     }
 
+    /**
+     * Redirects the user back to the appointmentMain page.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void addAppointmentCancelButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -299,15 +317,14 @@ public class AddAppointmentController implements Initializable {
         addPartStage.show();
     }
 
-    public void addAppointmentDatePicker(ActionEvent actionEvent) {
-    }
-
-    public void startTimeCombo(ActionEvent actionEvent) {
-    }
-
-    public void endTimeCombo(ActionEvent actionEvent) {
-    }
-
+    /**
+     * This date formatter takes in a string value of a current date, the local date/time input by the user. A
+     * LocalDateTime object is then created with the UTC_STANDARD_FORMAT that I set and the user's input. This input
+     * is then zoned according to the user's system ZoneId. The user's system time is then converted to UTC time, and
+     * the value is transformed to a string, formatted, and returned to the save method.
+     * @param dateToBeFormatted
+     * @return
+     */
     public String utcDateTimeFormatter(CharSequence dateToBeFormatted) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -324,6 +341,15 @@ public class AddAppointmentController implements Initializable {
         return formattedDateTimeFull;
     }
 
+    /**
+     * Validation is provided for all user input where there are text fields. This method returns a boolean true or
+     * false based on the user's input.
+     * @param appointmentTitle
+     * @param appointmentDescription
+     * @param appointmentLocation
+     * @param appointmentType
+     * @return
+     */
     public boolean appointmentFieldTypeValidation(String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType) {
 
         boolean validationResult = true;
@@ -352,6 +378,10 @@ public class AddAppointmentController implements Initializable {
 
     }
 
+    /**
+     * All error alerts are set with appropriate values to declutter the other methods.
+     * @param errorCode
+     */
     private void errorAlert(int errorCode) {
         if(errorCode == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
