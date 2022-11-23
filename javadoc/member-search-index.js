@@ -1,1 +1,1 @@
-memberSearchIndex = [{"p":"Models","c":"Contact","l":"Contact()","u":"%3Cinit%3E()"},{"p":"Models","c":"Contact","l":"Contact(int, String, String)","u":"%3Cinit%3E(int,java.lang.String,java.lang.String)"},{"p":"Models","c":"Contact","l":"getContactId(String)","u":"getContactId(java.lang.String)"}];updateSearchResults();
+memberSearchIndex = [{"p":"Models","c":"Country","l":"Country(int, String)","u":"%3Cinit%3E(int,java.lang.String)"},{"p":"Models","c":"Country","l":"getCountry()"}];updateSearchResults();
