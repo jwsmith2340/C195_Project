@@ -16,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -29,6 +28,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * The appointmentMainController handles the main appointment page, including all redirect button clicks
+ * and table view population.
+ */
 public class AppointmentMainController implements Initializable {
 
     @FXML
@@ -64,6 +67,12 @@ public class AppointmentMainController implements Initializable {
     @FXML
     ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
+    /**
+     * initialize gets all appointments in the DB and populates the appointmentList arrayList. Once all of the
+     * appointments have been added to arrayList, it is used to populate the appointment table.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Appointment main page initialized");
@@ -116,6 +125,11 @@ public class AppointmentMainController implements Initializable {
         appointmentsTableView.setItems(appointmentList);
     }
 
+    /**
+     * The add button redirects the user to the add appointment view.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void appointmentAddButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AddAppointment.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -124,10 +138,15 @@ public class AppointmentMainController implements Initializable {
         addPartStage.show();
     }
 
+    /**
+     * The modify button requires that a user first select an appointment to modify. If an appointment is selected,
+     * a new scene is created and the selected appointment is passed in to be modified in the ModifyAppointment view.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void appointmentModifyButton(ActionEvent actionEvent) throws IOException {
         if(appointmentsTableView.getSelectionModel().getSelectedItem() != null) {
             Appointment selectedAppointment = (Appointment) appointmentsTableView.getSelectionModel().getSelectedItem();
-            System.out.println(selectedAppointment);
             Parent parent;
             Stage stage;
             stage = (Stage) appointmentModifyButton.getScene().getWindow();
@@ -137,13 +156,17 @@ public class AppointmentMainController implements Initializable {
             stage.setScene(scene);
             ModifyAppointmentController controller = loader.getController();
             controller.setAppointment(selectedAppointment);
-//            controller.getCustomerModify();
         } else {
             errorAlert(2);
         }
 
     }
 
+    /**
+     * The back button redirects the user to the main appointment page without saving any input.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void appointmentBackButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -152,6 +175,12 @@ public class AppointmentMainController implements Initializable {
         addPartStage.show();
     }
 
+    /**
+     * The week radio button runs a query for all appointments in the DB between now and one week from now. Those
+     * appointments are then loaded into an array list, and once populated, that array list is used to set the
+     * appointment table view.
+     * @param actionEvent
+     */
     public void appointmentWeekRadio(ActionEvent actionEvent) {
         appointmentList.clear();
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
@@ -200,6 +229,12 @@ public class AppointmentMainController implements Initializable {
         appointmentsTableView.setItems(appointmentList);
     }
 
+    /**
+     * The month radio button runs a query for all appointments in the DB between now and one month from now. Those
+     * appointments are then loaded into an array list, and once populated, that array list is used to set the
+     * appointment table view.
+     * @param actionEvent
+     */
     public void appointmentMonthRadio(ActionEvent actionEvent) {
         appointmentList.clear();
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
@@ -248,11 +283,11 @@ public class AppointmentMainController implements Initializable {
         appointmentsTableView.setItems(appointmentList);
     }
 
-
-
-    public void initialize(ActionEvent actionEvent) {}
-
-
+    /**
+     * The all radio button runs a query for all appointments in the DB. Those appointments are then loaded into an
+     * array list, and once populated, that array list is used to set the appointment table view.
+     * @param actionEvent
+     */
     public void appointmentAll(ActionEvent actionEvent) {
         appointmentList.clear();
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
@@ -299,6 +334,15 @@ public class AppointmentMainController implements Initializable {
 
     }
 
+    /**
+     * The delete button first requires that a user has selected an appointment they wish to delete. Once confirmed
+     * that there is a selected appointment, an alert confirming the user wishes to delete the appointment appears.
+     * If the user selects that they wish to continue, a DELETE statement is run in the DB, and the appointment main
+     * page is reloaded to reflect the dropped appointment.
+     * @param actionEvent
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void appointmentDeleteButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
 
         if(appointmentsTableView.getSelectionModel().getSelectedItem() != null) {
@@ -344,6 +388,10 @@ public class AppointmentMainController implements Initializable {
         }
     }
 
+    /**
+     * All error alerts are set here so they can be called instead of being created in each method.
+     * @param errorCode
+     */
     private void errorAlert(int errorCode) {
         if(errorCode == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -360,6 +408,12 @@ public class AppointmentMainController implements Initializable {
         }
     }
 
+    /**
+     * local date time formatter takes UTC Date Time as a string and transforms it to the user's local date time. The
+     * time is formatted and returned in the standard format that I've chosen for this project.
+     * @param dateToBeFormatted
+     * @return
+     */
     public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
