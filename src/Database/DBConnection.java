@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * The DBConnection class creates DB connections that can be called with a single line, greatly
+ * reducing code clutter through the program.
+ */
 public class DBConnection {
 
     private static final String protocol = "jdbc";
@@ -19,6 +23,11 @@ public class DBConnection {
     private static final String password = "Passw0rd!";
     private static Connection conn = null;
 
+    /**
+     * start connection opens a connection with the MySQL DB and allows for queries and insert statements to be performed
+     * @return
+     * @throws ClassNotFoundException
+     */
     public static Connection startConnection() throws ClassNotFoundException {
         try {
             Class.forName(MYSQLJBCDriver);
@@ -32,6 +41,10 @@ public class DBConnection {
         return conn;
     }
 
+    /**
+     * This closes the connection to the DB
+     * @throws SQLException
+     */
     public static void closeConnection() throws SQLException{
         conn.close();
         System.out.println("Connection closed.");
