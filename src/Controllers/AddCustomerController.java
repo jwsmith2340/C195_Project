@@ -24,7 +24,12 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 public class AddCustomerController implements Initializable {
     @FXML
@@ -56,7 +61,30 @@ public class AddCustomerController implements Initializable {
         java.util.Date datetime = new java.util.Date();
         java.text.SimpleDateFormat dateTimeFormatted = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        String currentTime = dateTimeFormatted.format(datetime);
+//        String currentTime = dateTimeFormatted.format(datetime);
+//        SimpleDateFormat currentTimeFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+//        currentTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        ZoneId utcZoneId = ZoneId.of("UTC");
+        LocalDateTime utcDateTime = LocalDateTime.now(utcZoneId);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss");
+        String utcFormattedDateTime = utcDateTime.format(dateTimeFormatter);
+
+
+
+//
+//        SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+//        return dateFormatLocal.parse( dateFormatGmt.format(new Date()) );
+
+
+
+
+
+
+
+
+
+
 
         String customerName =String.valueOf(addCustomerNameField.getText());
         String customerAddress = String.valueOf(addCustomerAddressField.getText());
@@ -88,9 +116,9 @@ public class AddCustomerController implements Initializable {
                     preparedStatement.setString(2, customerAddress);
                     preparedStatement.setString(3, customerPostal);
                     preparedStatement.setString(4, customerPhone);
-                    preparedStatement.setString(5, currentTime);
+                    preparedStatement.setString(5, utcFormattedDateTime);
                     preparedStatement.setString(6, "user");
-                    preparedStatement.setString(7, currentTime);
+                    preparedStatement.setString(7, utcFormattedDateTime);
                     preparedStatement.setString(8, "user");
                     preparedStatement.setInt(9, customerDivisionId);
 
