@@ -22,10 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -182,6 +179,9 @@ public class AddAppointmentController implements Initializable {
                                 String startDateFormatted = appointmentDate + " " + appointmentStartTime + ":00";
                                 String endDateFormatted = appointmentDate + " " + appointmentEndTime + ":00";
 
+                                String startDateFormattedUtc = utcDateTimeFormatter(startDateFormatted);
+                                String endDateFormattedUtc = utcDateTimeFormatter(endDateFormatted);
+
                                 String[] startTime = appointmentStartTime.split(":");
                                 String startTimeFull = startTime[0] + startTime[1];
                                 int startTimeInt = Integer.parseInt(startTimeFull);
@@ -189,6 +189,10 @@ public class AddAppointmentController implements Initializable {
                                 String[] endTime = appointmentEndTime.split(":");
                                 String endTimeFull = endTime[0] + endTime[1];
                                 int endTimeInt = Integer.parseInt(endTimeFull);
+
+
+
+
 
                                 if (endTimeInt > startTimeInt) {
 
@@ -201,10 +205,10 @@ public class AddAppointmentController implements Initializable {
                                         DBPreparedStatement.setPreparedStatement(DBConnection.startConnection(), sqlApptCheck);
                                         PreparedStatement overlapPreparedStatement = DBPreparedStatement.getPreparedStatement();
 
-                                        overlapPreparedStatement.setString(1, String.valueOf(startDateFormatted));
-                                        overlapPreparedStatement.setString(2, String.valueOf(endDateFormatted));
-                                        overlapPreparedStatement.setString(3, String.valueOf(startDateFormatted));
-                                        overlapPreparedStatement.setString(4, String.valueOf(endDateFormatted));
+                                        overlapPreparedStatement.setString(1, String.valueOf(startDateFormattedUtc));
+                                        overlapPreparedStatement.setString(2, String.valueOf(endDateFormattedUtc));
+                                        overlapPreparedStatement.setString(3, String.valueOf(startDateFormattedUtc));
+                                        overlapPreparedStatement.setString(4, String.valueOf(endDateFormattedUtc));
                                         overlapPreparedStatement.setInt(5, appointmentCustomerId);
 
                                         System.out.println(sqlApptCheck);
@@ -306,6 +310,22 @@ public class AddAppointmentController implements Initializable {
     }
 
     public void endTimeCombo(ActionEvent actionEvent) {
+    }
+
+    public String utcDateTimeFormatter(CharSequence dateToBeFormatted) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTime = LocalDateTime.parse(dateToBeFormatted, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTime = localStartDateTime.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcSqlStartTime = systemStartZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        Instant utcSqlStartTimestamp = systemStartZonedDateTime.toInstant();
+
+        String utcSqlStartTimestampString = String.valueOf(utcSqlStartTimestamp);
+        String utcSqlStartSubString = utcSqlStartTimestampString.substring(0,19);
+        String[] startTime = utcSqlStartSubString.split("T");
+        String formattedDateTimeFull = startTime[0] + " " + startTime[1];
+
+        return formattedDateTimeFull;
     }
 
     public boolean appointmentFieldTypeValidation(String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType) {
