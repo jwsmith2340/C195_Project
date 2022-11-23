@@ -13,6 +13,19 @@ public class Appointment {
     private int customerId;
     private int userId;
 
+    /**
+     * The appointment constructor, takes in arguments to create instances of the appointment class
+     * @param appointmentId
+     * @param appointmentTitle
+     * @param appointmentDescription
+     * @param appointmentLocation
+     * @param contactsName
+     * @param appointmentType
+     * @param appointmentStart
+     * @param appointmentEnd
+     * @param customerId
+     * @param userId
+     */
     public Appointment(int appointmentId, String appointmentTitle, String appointmentDescription, String appointmentLocation, String contactsName, String appointmentType, String appointmentStart, String appointmentEnd, int customerId, int userId) {
         this.appointmentId = appointmentId;
         this.appointmentTitle = appointmentTitle;
@@ -26,84 +39,84 @@ public class Appointment {
         this.userId = userId;
     }
 
+    /**
+     * returns the appointment ID
+     * @return
+     */
     public int getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(int appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
+    /**
+     * returns the appointment title
+     * @return
+     */
     public String getAppointmentTitle() {
         return this.appointmentTitle;
     }
 
-    public void setAppointmentTitle(String appointmentTitle) {
-        this.appointmentTitle = appointmentTitle;
-    }
-
+    /**
+     * returns the appointment description
+     * @return
+     */
     public String getAppointmentDescription() {
         return appointmentDescription;
     }
 
-    public void setAppointmentDescription(String appointmentDescription) {
-        this.appointmentDescription = appointmentDescription;
-    }
-
+    /**
+     * returns the appointment location
+     * @return
+     */
     public String getAppointmentLocation() {
         return appointmentLocation;
     }
 
-    public void setAppointmentLocation(String appointmentLocation) {
-        this.appointmentLocation = appointmentLocation;
-    }
-
+    /**
+     * returns the appointment contact name
+     * @return
+     */
     public String getContactsName() {
         return contactsName;
     }
 
-    public void setContactsName(String contactsName) {
-        this.contactsName = contactsName;
-    }
-
+    /**
+     * returns the appointment type
+     * @return
+     */
     public String getAppointmentType() {
         return appointmentType;
     }
 
-    public void setAppointmentType(String appointmentType) {
-        this.appointmentType = appointmentType;
-    }
-
+    /**
+     * returns the appointment start local date time
+     * @return
+     */
     public String getAppointmentStartLocalDT() {
         return appointmentStart;
     }
 
-    public void setAppointmentStart(String appointmentStart) {
-        this.appointmentStart = appointmentStart;
-    }
-
+    /**
+     * returns the appointment end local date time
+     * @return
+     */
     public String getAppointmentEndLocalDT() {
         return appointmentEnd;
     }
 
-    public void setAppointmentEnd(String appointmentEnd) {
-        this.appointmentEnd = appointmentEnd;
-    }
-
+    /**
+     * returns the appointment customer id
+     * @return
+     */
     public int getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
+    /**
+     * returns the appointment user id
+     * @return
+     */
     public int getUserId() {
         return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
 }
