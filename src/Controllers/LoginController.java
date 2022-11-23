@@ -17,21 +17,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
+/**
+ * This is the landing page for the application, handles login and logging services.
+ */
 public class LoginController implements Initializable {
     @FXML
     public TextField usernameField;
@@ -51,6 +51,12 @@ public class LoginController implements Initializable {
     private ResourceBundle rb;
     public String locale = String.valueOf(Locale.getDefault());
 
+    /**
+     * initialize determines the user's locale and sets all labels, buttons, and alerts to English or French
+     * based on the user's locale.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Login Page is Initialized");
@@ -66,6 +72,17 @@ public class LoginController implements Initializable {
 
     }
 
+    /**
+     * loginPageLogin grabs the user's input for the username and password fields, that input is then used in a sql
+     * statement to determine if that user + password combination exists in the users table. If the login is successful,
+     * the log function is called. The user's local date and time is then determined and a query is made to the DB
+     * to determine whether there is an appointment within the next 15 minutes. An alert is created whether there is
+     * an appointment or not.
+     * @param event
+     * @throws IOException
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public void loginPageLogin(ActionEvent event) throws IOException, SQLException, ClassNotFoundException {
         String userName = String.valueOf(usernameField.getText());
         String userPassword = String.valueOf(passwordField.getText());
@@ -137,10 +154,19 @@ public class LoginController implements Initializable {
 
     }
 
+    /**
+     * Exits the application
+     * @param actionEvent
+     */
     public void loginPageExit(ActionEvent actionEvent) {
         Platform.exit();
     }
 
+    /**
+     * If the login is successful, the username and time is logged in the log file
+     * @param username
+     * @throws IOException
+     */
     private void logLoginSuccess(String username) throws IOException {
         try {
             LocalDateTime currentTime = LocalDateTime.now();
@@ -154,6 +180,11 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * If the login fails, the username and time is logged in the log file
+     * @param username
+     * @throws IOException
+     */
     private void logLoginFailure(String username) throws IOException {
         try {
             LocalDateTime currentTime = LocalDateTime.now();
@@ -167,6 +198,14 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * This date formatter takes in a string value of a current date, the local date/time input by the user. A
+     * LocalDateTime object is then created with the UTC_STANDARD_FORMAT that I set and the user's input. This input
+     * is then zoned according to the user's system ZoneId. The user's system time is then converted to UTC time, and
+     * the value is transformed to a string, formatted, and returned to the save method.
+     * @param dateToBeFormatted
+     * @return
+     */
     public String localToUtcDateTimeFormatter(String dateToBeFormatted) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -183,6 +222,11 @@ public class LoginController implements Initializable {
         return formattedDateTimeFull;
     }
 
+    /**
+     * This method takes in a date in UTC time and returns it in the user's local time
+     * @param dateToBeFormatted
+     * @return
+     */
     public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
