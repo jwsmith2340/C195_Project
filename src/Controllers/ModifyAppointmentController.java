@@ -143,16 +143,16 @@ public class ModifyAppointmentController implements Initializable {
         modifyAppointment = selectedAppointment;
 
         String rawDate = String.valueOf(selectedAppointment.getAppointmentStart());
-        
-        String formattedRawDate = localDateTimeFormatter(rawDate);
-        System.out.println(formattedRawDate);
+        String rawEnd = String.valueOf(selectedAppointment.getAppointmentEnd());
 
-        String[] apptDate = rawDate.split(" ");
+        String formattedRawDate = localDateTimeFormatter(rawDate);
+        String formattedRawEnd = localDateTimeFormatter(rawEnd);
+
+        String[] apptDate = formattedRawDate.split(" ");
         String parsedDate = apptDate[0];
         String parsedStartTime = apptDate[1];
 
-        String rawEnd = String.valueOf(selectedAppointment.getAppointmentEnd());
-        String[] endTime = rawEnd.split(" ");
+        String[] endTime = formattedRawEnd.split(" ");
         String parsedEndTime = endTime[1];
 
         modifyAppointmentIdField.setText(Integer.toString(selectedAppointment.getAppointmentId()));
