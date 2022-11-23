@@ -20,6 +20,11 @@ public class MainMenuController {
     public Button mainReportsButton;
     public Button mainExitButton;
 
+    /**
+     * Redirects the user to the main customer view
+     * @param actionEvent
+     * @throws IOException
+     */
     public void mainCustomerButton(ActionEvent actionEvent) throws IOException {
 //        Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/CustomerMain.fxml"));
@@ -29,6 +34,11 @@ public class MainMenuController {
         addPartStage.show();
     }
 
+    /**
+     * Redirects the user to the main appointment view
+     * @param actionEvent
+     * @throws IOException
+     */
     public void mainAppointmentButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AppointmentMain.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -37,6 +47,11 @@ public class MainMenuController {
         addPartStage.show();
     }
 
+    /**
+     * redirects the user to the report view
+     * @param actionEvent
+     * @throws IOException
+     */
     public void mainReportsButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/Reports.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -45,6 +60,10 @@ public class MainMenuController {
         addPartStage.show();
     }
 
+    /**
+     * exits the application
+     * @param actionEvent
+     */
     public void mainExitButton(ActionEvent actionEvent) {
         Platform.exit();
     }
