@@ -77,8 +77,8 @@ public class AddAppointmentController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Appointment add page initialized.");
 
-        LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(8);
-        LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(1).minusMinutes(45);
+        LocalTime startTimeBoxValues = LocalTime.MIN.plusHours(0);
+        LocalTime endTimeBoxValues = LocalTime.MAX.minusHours(0).minusMinutes(15);
 
         if (!startTimeBoxValues.equals(0) || !endTimeBoxValues.equals(0)) {
 
