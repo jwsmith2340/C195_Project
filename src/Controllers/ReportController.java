@@ -19,7 +19,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -30,10 +29,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This class handles the report view controller and its three table views
+ */
 public class ReportController implements Initializable {
     @FXML
     public TableView reportMonthTable;
@@ -81,8 +82,11 @@ public class ReportController implements Initializable {
             "January", "February", "March", "April", "May", "June", "July", "August", "September",
             "October", "November", "December"};
 
-
-
+    /**
+     * initialize sets the three table views on the Reports page by calling their respective methods
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("report initialized");
@@ -91,6 +95,11 @@ public class ReportController implements Initializable {
         populateMonthsTable();
     }
 
+    /**
+     * Redirects the user to the main menu
+     * @param actionEvent
+     * @throws IOException
+     */
     public void reportBackButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -99,6 +108,11 @@ public class ReportController implements Initializable {
         addPartStage.show();
     }
 
+    /**
+     * Populate Appt Table handles populating the main appointment table in the Reports view. The sql statement is run
+     * to grab all required column values for all the appointments in the DB. An array list is then populated with those
+     * values and once all of the appointments have been added to the list, that list is used to populate the table view.
+     */
     private void populateAppointmentTable() {
 
         String sqlStatement = "SELECT Appointments.Appointment_ID, Appointments.Title, Appointments.Description, " +
@@ -146,6 +160,11 @@ public class ReportController implements Initializable {
         reportAppointmentTable.setItems(appointmentList);
     }
 
+    /**
+     * Populate Country Table handles populating the country table in the Reports view. The sql statement is run
+     * to grab all required column values for all the appointments in the DB. An array list is then populated with those
+     * values and once all of the appointments have been added to the list, that list is used to populate the table view.
+     */
     private void populateCountryTable() {
         String sqlStatement = "SELECT COUNT(*) as total, Country FROM Appointments INNER JOIN Customers ON " +
                 "Appointments.Customer_ID = Customers.Customer_ID INNER JOIN first_level_divisions ON \n" +
@@ -176,6 +195,16 @@ public class ReportController implements Initializable {
 
     }
 
+    /**
+     * Populate Months Table handles populating the month/type view table in the Reports view. The sql statement is run
+     * to grab all required column values for all the appointments in the DB. An array list is then populated with those
+     * values and once all of the appointments have been added to the list, that list is used to populate the table view.
+     *
+     * LAMBDA #1- This method uses a lambda expression to loop through the monthsArray, which is declared in the variable
+     * declaration section of this class. The lambda loops through those countries while incrementing a count variable so
+     * that 12 queries can be run while only writing one loop instead of 12. This lambda expression greatly cut down on
+     * unnecessary code.
+     */
     private void populateMonthsTable() {
 
         AtomicInteger monthCount = new AtomicInteger();
@@ -227,9 +256,6 @@ public class ReportController implements Initializable {
                     }
                 }
 
-
-
-
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -242,6 +268,12 @@ public class ReportController implements Initializable {
 
     }
 
+    /**
+     * This method takes in a date time value as UTC and converts it to the user's local date time. That date time is
+     * then formatted, and the formatted value is returned.
+     * @param dateToBeFormatted
+     * @return
+     */
     public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
         String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -254,7 +286,6 @@ public class ReportController implements Initializable {
         String[] localTime = localTimeSubString.split("T");
         String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
 
-        System.out.println(formattedDateTimeFull);
         return formattedDateTimeFull;
     }
 
