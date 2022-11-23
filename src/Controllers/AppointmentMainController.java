@@ -426,7 +426,6 @@ public class AppointmentMainController implements Initializable {
         String[] localTime = localTimeSubString.split("T");
         String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
 
-        System.out.println(formattedDateTimeFull);
         return formattedDateTimeFull;
     }
 }
