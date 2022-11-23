@@ -25,6 +25,10 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * The customerMainController handles the main customer page, including all redirect button clicks
+ * and table view population.
+ */
 public class CustomerMainController implements Initializable {
 
     @FXML
@@ -54,6 +58,13 @@ public class CustomerMainController implements Initializable {
     @FXML
     ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
+    /**
+     * initialize first queries the DB for all customers. Those customers then create a new instance of the customer
+     * class, and that class is added to an array list, customerList. Once that list is populated, it is used to
+     * set the customer main table view.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Customer main page initialized");
@@ -97,6 +108,11 @@ public class CustomerMainController implements Initializable {
         customerMainTableView.setItems(customerList);
     }
 
+    /**
+     * The add button redirects the user to the add customer view.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void customersAddButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/AddCustomer.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -105,6 +121,12 @@ public class CustomerMainController implements Initializable {
         addPartStage.show();
     }
 
+    /**
+     * The modify button requires that a user first select a customer to modify. If a customer is selected,
+     * a new scene is created and the selected customer is passed in to be modified in the ModifyCustomer view.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void customersModifyButton(ActionEvent actionEvent) throws IOException {
         if(customerMainTableView.getSelectionModel().getSelectedItem() != null) {
             Customer selectedCustomer = (Customer) customerMainTableView.getSelectionModel().getSelectedItem();
@@ -124,6 +146,11 @@ public class CustomerMainController implements Initializable {
 
     }
 
+    /**
+     * The back button redirects the user to the main menu view
+     * @param actionEvent
+     * @throws IOException
+     */
     public void customersBackButton(ActionEvent actionEvent) throws IOException {
         Parent add_product = FXMLLoader.load(getClass().getResource("/Views/MainMenu.fxml"));
         Scene addPartScene = new Scene(add_product);
@@ -132,6 +159,15 @@ public class CustomerMainController implements Initializable {
         addPartStage.show();
     }
 
+    /**
+     * The delete button first requires that a user has selected a customer they wish to delete. Once confirmed
+     * that there is a selected customer, an alert confirming the user wishes to delete the customer appears.
+     * If the user selects that they wish to continue, a DELETE statement is run in the DB, and the customer main
+     * page is reloaded to reflect the dropped customer.
+     * @param actionEvent
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void customersDeleteButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
         // Don't forget the cascade delete for all events when this is deleted
         if(customerMainTableView.getSelectionModel().getSelectedItem() != null) {
@@ -193,6 +229,10 @@ public class CustomerMainController implements Initializable {
         }
     }
 
+    /**
+     * The error alert method has all error messages created here so they can be called from other methods
+     * @param errorCode
+     */
     private void errorAlert(int errorCode) {
         if(errorCode == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
