@@ -21,8 +21,8 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class ModifyAppointmentController implements Initializable {
@@ -143,6 +143,10 @@ public class ModifyAppointmentController implements Initializable {
         modifyAppointment = selectedAppointment;
 
         String rawDate = String.valueOf(selectedAppointment.getAppointmentStart());
+        
+        String formattedRawDate = localDateTimeFormatter(rawDate);
+        System.out.println(formattedRawDate);
+
         String[] apptDate = rawDate.split(" ");
         String parsedDate = apptDate[0];
         String parsedStartTime = apptDate[1];
@@ -166,6 +170,22 @@ public class ModifyAppointmentController implements Initializable {
     }
 
     public void addAppointmentIdField(ActionEvent actionEvent) {
+    }
+
+    public String localDateTimeFormatter(CharSequence dateToBeFormatted) {
+        String UTC_STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        LocalDateTime localStartDateTimeee = LocalDateTime.parse(dateToBeFormatted, DateTimeFormatter.ofPattern(UTC_STANDARD_FORMAT));
+        ZonedDateTime systemStartZonedDateTimeee = localStartDateTimeee.atZone(ZoneId.of("UTC"));
+        ZonedDateTime utcSqlStartTimeee = systemStartZonedDateTimeee.withZoneSameInstant(ZoneId.systemDefault());
+
+        String localTimeString = String.valueOf(utcSqlStartTimeee);
+        String localTimeSubString = localTimeString.substring(0,16);
+        String[] localTime = localTimeSubString.split("T");
+        String formattedDateTimeFull = localTime[0] + " " + localTime[1] + ":00";
+
+        System.out.println(formattedDateTimeFull);
+        return formattedDateTimeFull;
     }
 
     public void modifyAppointmentSaveButton(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
