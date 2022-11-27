@@ -109,7 +109,7 @@ public class ReportController implements Initializable {
     }
 
     /**
-     * Populate Appt Table handles populating the main appointment table in the Reports view. The sql statement is run
+     * Populate appt table handles populating the main appointment table in the reports view. The sql statement is run
      * to grab all required column values for all the appointments in the DB. An array list is then populated with those
      * values and once all of the appointments have been added to the list, that list is used to populate the table view.
      */
