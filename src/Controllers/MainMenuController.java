@@ -9,11 +9,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
+
+/**
+ * MainMenuController is the controller responsible for the main menu view
+ */
 public class MainMenuController {
     public Button mainCustomerButton;
     public Button mainAppointmentButton;

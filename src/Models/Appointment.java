@@ -1,5 +1,8 @@
 package Models;
 
+/**
+ * The Appointment class creates instances of the Appointment class in the appointment controllers
+ */
 public class Appointment {
 
     private int appointmentId;

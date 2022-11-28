@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.TimeZone;
 
+/**
+ * The class HelloApplication is the main class of the application that holds the application gateway
+ */
 public class HelloApplication extends Application {
     /**
      * start sets global variables for the user's local timezone as well as ET time zone. It then loads the user
